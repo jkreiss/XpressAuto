@@ -1,0 +1,106 @@
+Build a modern, responsive landing page website for an automotive repair business called Xpress Automotive using:
+	•	React (with Vite)
+	•	Functional components
+	•	CSS (or CSS modules)
+	•	Clean component structure
+
+🎨 Branding & Style
+Color Palette:
+	•	Dark Gray: #2E2E2E
+	•	Black: #111111
+	•	Light Blue Accent: #8ac4ff
+	•	White: #FFFFFF
+The site should feel:
+	•	Professional
+	•	Trustworthy
+	•	Modern
+	•	Clean
+	•	Automotive-focused
+Use smooth scrolling and subtle animations.
+
+📌 Layout & Sections
+1️⃣ Sticky Header (IMPORTANT)
+Create a sticky/fixed top navigation bar that is always visible.
+Left side:
+	•	Logo text: Xpress Automotive
+Right side:
+	•	Navigation links (Home, Services, Reviews, Contact)
+	•	A light blue “Call Now” button
+	•	A bordered “Contact Us” button
+The Call Now button should:
+	•	Be highlighted with #8ac4ff background
+	•	Use a tel: link
+The header should:
+	•	Slightly shrink or add shadow on scroll
+	•	Stay visible at all times
+
+2️⃣ Hero Section
+Full-width section with:
+	•	Headline: "Fast. Reliable. Trusted."
+	•	Subheading: "Your local automotive repair specialists."
+	•	Primary CTA button: "Book Now"
+Dark background with light blue accent highlights.
+
+3️⃣ About Section
+Should include a section about their services such as
+	•	Wofs
+	•	Automotive servicing
+	•	Small retail store 
+	•	Meachanical fixes
+
+4️⃣ Services Section
+Create 4 service cards with icons:
+	•	Diagnostics
+	•	General Repairs
+	•	WOF / Inspections
+	•	Emergency Repairs
+Cards should:
+	•	Have hover lift animation
+	•	Light blue accent borders on hover
+
+5️⃣ Reviews Section (Carousel – IMPORTANT)
+Create a rotating testimonial carousel component:
+Requirements:
+	•	Show 1 review on mobile
+	•	Show 2 reviews side-by-side on desktop
+	•	Auto-rotate every 5 seconds
+	•	Include smooth slide or fade animation
+	•	Include left/right arrow controls
+	•	Include dot indicators
+	•	Store reviews in a JavaScript array (easy to replace with API later)
+Reviews to use:
+	1	"Very good experience there, work was efficient and for a good price."
+	2	"Our mechanic had the right diagnostic, repaired everything and in a very short time! Afterwards he took the time to show us what he did and what we have to do to take care of our van :) We arrived very stressed and left in peace, thank you!" – Cyrielle Sica
+	3	"Fantastic place, we had an issue with our bumper on our car that morning. Called them an hour before to ask if someone can take a look, they said no problem. As soon as we arrived Steve came out, clipped the bumper within 5 mins. We were so grateful! An issue we really needed fixing and service was friendly, quick and easy. So thankful for these guys!" – Anna
+	4	"Very impressed with the service we received with our car, that had an issue with its steering. Scott diagnosed the issue very quickly and the work was done just as fast. Very professional and genuine service." – Mitchell Job
+	5	"Was stranded in Ohakune with a dead car. Scott was awesome coming to help in quick fashion and was able to get us up and going quickly." – Cherie Boggiss
+Below the section add:
+"More reviews coming soon – synced with Google Business."
+Structure it so that reviews could later be fetched from an API.
+
+6️⃣ Contact Section
+Include:
+	•	Phone number placeholder
+	•	Email placeholder
+	•	Location placeholder
+	•	Contact form (name, email, message)
+	•	Submit button in light blue
+
+7️⃣ Footer
+	•	Business name
+	•	Quick navigation links
+	•	Social media placeholders
+	•	Copyright line
+
+⚙️ Technical Requirements
+	•	Use clean folder structure:
+	◦	components/
+	◦	sections/
+	•	Use React hooks (useState, useEffect)
+	•	Make carousel logic reusable
+	•	Use semantic HTML
+	•	Fully responsive
+	•	Smooth scroll behavior
+	•	Clean, well-commented code
+	•	Professional production-ready styling
+Make it look like a high-end, trustworthy automotive workshop website.
