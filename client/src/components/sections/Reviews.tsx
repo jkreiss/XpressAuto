@@ -81,7 +81,7 @@ export function Reviews() {
             <h2 className="text-sm font-bold tracking-[0.2em] text-primary uppercase">Testimonials</h2>
             <div className="h-[2px] w-12 bg-primary"></div>
           </div>
-          <h3 className="text-4xl md:text-5xl font-black text-foreground mb-6">What Our Customers Say</h3>
+          <h3 className="text-4xl md:text-5xl font-black text-white mb-6">What Our Customers Say</h3>
         </div>
 
         <div className="relative max-w-6xl mx-auto">
@@ -93,23 +93,23 @@ export function Reviews() {
                   key={review.id} 
                   className="flex-[0_0_100%] min-w-0 pl-6 md:flex-[0_0_50%]"
                 >
-                  <div className="bg-white border-2 border-foreground/5 p-10 rounded-none h-full flex flex-col relative shadow-sm">
-                    <Quote className="absolute top-8 right-8 w-16 h-16 text-primary/5" />
+                  <div className="bg-background border border-white/5 p-10 rounded-3xl h-full flex flex-col relative shadow-xl">
+                    <Quote className="absolute top-8 right-8 w-16 h-16 text-primary/10" />
                     <div className="flex gap-1.5 mb-8 relative z-10">
                       {[...Array(review.rating)].map((_, i) => (
                         <Star key={i} className="w-5 h-5 fill-primary text-primary" />
                       ))}
                     </div>
-                    <p className="text-foreground/80 text-xl font-medium leading-relaxed flex-grow mb-10 relative z-10 uppercase tracking-tight italic">
+                    <p className="text-white/80 text-xl font-medium leading-relaxed flex-grow mb-10 relative z-10">
                       "{review.text}"
                     </p>
-                    <div className="flex items-center gap-4 relative z-10 pt-6 border-t-2 border-foreground/5">
-                      <div className="w-14 h-14 rounded-none bg-primary/10 flex items-center justify-center text-primary font-black text-xl border-2 border-primary/20">
+                    <div className="flex items-center gap-4 relative z-10 pt-6 border-t border-white/5">
+                      <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center text-primary font-black text-xl border border-primary/20 shadow-inner">
                         {review.author.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-foreground font-black uppercase text-lg">{review.author}</p>
-                        <p className="text-primary/80 text-xs font-black uppercase tracking-widest">Verified Customer</p>
+                        <p className="text-white font-bold text-lg">{review.author}</p>
+                        <p className="text-primary/80 text-sm font-semibold tracking-wide">Verified Customer</p>
                       </div>
                     </div>
                   </div>
