@@ -32,18 +32,18 @@ export function About() {
 
           <div className="flex flex-col">
             <h2 className="text-primary font-black uppercase tracking-[0.3em] text-xs mb-4">The Workshop</h2>
-            <h3 className="text-5xl md:text-7xl font-black text-white mb-8 leading-[0.9] uppercase italic">
+            <h3 className="text-5xl md:text-7xl font-black text-foreground mb-8 leading-[0.9] uppercase italic">
               Real Work.<br/>Real People.
             </h3>
-            <p className="text-lg text-white/50 mb-10 leading-snug font-bold uppercase tracking-tight max-w-lg">
+            <p className="text-lg text-foreground/50 mb-10 leading-snug font-bold uppercase tracking-tight max-w-lg">
               We aren't a corporate chain. We're a local crew of mechanics who give a damn about your car. No jargon, just results.
             </p>
             
             <div className="grid sm:grid-cols-2 gap-4 mb-10">
               {features.map((feature, i) => (
-                <div key={i} className="flex items-center gap-3 p-4 border-2 border-white/5 bg-card/50">
+                <div key={i} className="flex items-center gap-3 p-4 border-2 border-foreground/5 bg-card">
                   <CheckCircle2 className="w-5 h-5 text-primary" />
-                  <span className="text-white font-black uppercase text-xs tracking-wider">{feature}</span>
+                  <span className="text-foreground font-black uppercase text-xs tracking-wider">{feature}</span>
                 </div>
               ))}
             </div>

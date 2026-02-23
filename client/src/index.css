@@ -34,28 +34,28 @@
 
 :root {
   /* Dark Gray: #2E2E2E, Black: #111111, Light Blue Accent: #8ac4ff, White: #FFFFFF */
-  --background: 0 0% 7%;
-  --foreground: 0 0% 100%;
-  --card: 0 0% 12%;
-  --card-foreground: 0 0% 100%;
-  --popover: 0 0% 7%;
-  --popover-foreground: 0 0% 100%;
+  --background: 210 20% 98%;
+  --foreground: 0 0% 12%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 12%;
+  --popover: 210 20% 98%;
+  --popover-foreground: 0 0% 12%;
   
   /* Light Blue Accent */
-  --primary: 210 100% 77%;
-  --primary-foreground: 0 0% 7%;
+  --primary: 210 100% 45%;
+  --primary-foreground: 0 0% 100%;
   
-  --secondary: 0 0% 15%;
-  --secondary-foreground: 0 0% 100%;
-  --muted: 0 0% 15%;
-  --muted-foreground: 0 0% 50%;
-  --accent: 210 100% 77%;
-  --accent-foreground: 0 0% 7%;
+  --secondary: 0 0% 92%;
+  --secondary-foreground: 0 0% 12%;
+  --muted: 0 0% 92%;
+  --muted-foreground: 0 0% 40%;
+  --accent: 210 100% 45%;
+  --accent-foreground: 0 0% 100%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
-  --border: 0 0% 20%;
-  --input: 0 0% 15%;
-  --ring: 210 100% 77%;
+  --border: 0 0% 85%;
+  --input: 0 0% 92%;
+  --ring: 210 100% 45%;
   --radius: 0px;
 }
 
