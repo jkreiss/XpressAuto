@@ -39,21 +39,21 @@ export function Services() {
           <p className="text-white/60 text-lg font-medium leading-relaxed">We offer a comprehensive range of automotive services designed to keep your vehicle running at its best, safely and reliably.</p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 xl:gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {services.map((service, index) => (
             <div 
               key={index} 
-              className="bg-card border border-white/5 rounded-2xl p-8 hover:-translate-y-2 hover:border-primary transition-all duration-500 shadow-xl hover:shadow-[0_0_30px_-5px_rgba(138,196,255,0.15)] group relative overflow-hidden"
+              className="bg-card border-2 border-white/5 p-8 hover:border-primary transition-all duration-300 group relative"
               data-testid={`card-service-${index}`}
             >
-              {/* Subtle gradient hover effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-              
-              <div className="w-20 h-20 rounded-2xl bg-background border border-white/5 shadow-inner flex items-center justify-center mb-8 group-hover:bg-primary/10 group-hover:border-primary/20 transition-colors duration-500">
+              <div className="w-16 h-16 bg-background border-2 border-white/5 flex items-center justify-center mb-8 group-hover:border-primary/40 transition-colors">
                 {service.icon}
               </div>
-              <h4 className="text-2xl font-bold text-white mb-4 group-hover:text-primary transition-colors">{service.title}</h4>
-              <p className="text-white/60 leading-relaxed font-medium">{service.description}</p>
+              <h4 className="text-xl font-black text-white mb-4 uppercase tracking-tight">{service.title}</h4>
+              <p className="text-white/50 leading-tight font-bold uppercase text-xs tracking-wider">{service.description}</p>
+              
+              {/* Corner accent */}
+              <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-white/10 group-hover:border-primary transition-colors" />
             </div>
           ))}
         </div>

@@ -23,37 +23,33 @@ export function Hero() {
       </div>
 
       <div className="container mx-auto px-4 md:px-6 relative z-10 flex flex-col items-center text-center">
-        <div className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-bold tracking-wide uppercase text-primary mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          Your Local Automotive Specialists
+        <div className="inline-flex items-center border-l-4 border-primary bg-primary/10 px-6 py-2 text-xs font-black tracking-[0.2em] uppercase text-primary mb-8 animate-in fade-in slide-in-from-left-4 duration-700">
+          Local Workshop Since 2014
         </div>
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-white mb-6 animate-in fade-in slide-in-from-bottom-5 duration-700 delay-150 max-w-5xl leading-[1.1]">
-          Fast. Reliable. <span className="text-primary relative inline-block">
+        <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-white mb-6 animate-in fade-in slide-in-from-bottom-5 duration-700 delay-150 max-w-5xl leading-[0.9] uppercase italic">
+          Fast. Reliable. <span className="text-primary block md:inline not-italic">
             Trusted.
-            {/* Underline accent */}
-            <span className="absolute -bottom-2 left-0 right-0 h-1 bg-primary/50 blur-[2px]"></span>
           </span>
         </h1>
-        <p className="text-lg md:text-2xl font-medium text-white/70 mb-12 max-w-2xl animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300 leading-relaxed">
-          Professional automotive repair and maintenance services. We get you back on the road safely and efficiently.
+        <p className="text-lg md:text-xl font-bold text-white/60 mb-12 max-w-xl animate-in fade-in duration-700 delay-300 leading-tight uppercase tracking-tight">
+          No corporate fluff. Just honest mechanical work from local experts.
         </p>
         
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-7 duration-700 delay-500">
           <button 
             onClick={() => scrollTo('contact')}
-            className="group relative inline-flex items-center justify-center gap-3 rounded-lg bg-primary text-primary-foreground px-8 py-4 text-lg font-bold shadow-lg shadow-primary/25 hover:bg-primary/90 hover:scale-[1.02] transition-all w-full sm:w-auto overflow-hidden"
+            className="group relative inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-10 py-5 text-xl font-black uppercase tracking-widest shadow-[8px_8px_0px_0px_rgba(138,196,255,0.2)] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none transition-all w-full sm:w-auto"
             data-testid="button-book-now"
           >
-            {/* subtle shine effect */}
-            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-[shimmer_1.5s_infinite]"></span>
-            Book Now
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            Book Your Service
+            <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
           </button>
           <button 
             onClick={() => scrollTo('services')}
-            className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-white/10 bg-white/5 backdrop-blur-sm px-8 py-4 text-lg font-bold text-white shadow-sm hover:bg-white/10 hover:border-white/20 transition-all w-full sm:w-auto"
+            className="inline-flex items-center justify-center gap-2 border-2 border-white/20 bg-transparent px-10 py-5 text-xl font-black uppercase tracking-widest text-white hover:bg-white/5 hover:border-white/40 transition-all w-full sm:w-auto"
             data-testid="button-our-services"
           >
-            Our Services
+            What We Do
           </button>
         </div>
       </div>
