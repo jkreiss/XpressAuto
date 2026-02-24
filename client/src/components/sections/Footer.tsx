@@ -115,7 +115,7 @@ export function Footer() {
       </div>
 
       {/* Decorative accent light */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] z-0 pointer-events-none translate-x-1/3 -translate-y-1/3" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(closest-side,var(--color-primary)_0%,transparent_100%)] opacity-5 z-0 pointer-events-none translate-x-1/3 -translate-y-1/3" />
     </footer>
   );
 }

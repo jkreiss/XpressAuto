@@ -36,13 +36,13 @@ export function Header() {
 
         <nav className="hidden lg:flex items-center gap-8">
           <button onClick={scrollToTop} className="text-sm font-semibold tracking-wide text-foreground/80 hover:text-primary transition-colors uppercase" data-testid="nav-home">Home</button>
-          <button onClick={() => scrollTo('services')} className="text-sm font-semibold tracking-wide text-foreground/80 hover:text-primary transition-colors uppercase" data-testid="nav-services">Services</button>
-          <button onClick={() => scrollTo('reviews')} className="text-sm font-semibold tracking-wide text-foreground/80 hover:text-primary transition-colors uppercase" data-testid="nav-reviews">Reviews</button>
-          <button onClick={() => scrollTo('contact')} className="text-sm font-semibold tracking-wide text-foreground/80 hover:text-primary transition-colors uppercase" data-testid="nav-contact">Contact</button>
+          <button onClick={() => scrollTo('services')} className="text-sm font-semibold tracking-wide text-foreground/80 hover:text-primary transition-colors uppercase cursor-pointer" data-testid="nav-services">Services</button>
+          <button onClick={() => scrollTo('reviews')} className="text-sm font-semibold tracking-wide text-foreground/80 hover:text-primary transition-colors uppercase cursor-pointer" data-testid="nav-reviews">Reviews</button>
+          <button onClick={() => scrollTo('contact')} className="text-sm font-semibold tracking-wide text-foreground/80 hover:text-primary transition-colors uppercase cursor-pointer" data-testid="nav-contact">Contact</button>
         </nav>
 
         <div className="hidden md:flex items-center gap-4">
-          <button onClick={() => scrollTo('contact')} className="inline-flex items-center justify-center rounded-md border border-border bg-background px-5 py-2.5 text-sm font-bold text-foreground shadow-sm hover:bg-black/5 transition-all" data-testid="button-contact-us">
+          <button onClick={() => scrollTo('contact')} className="inline-flex items-center justify-center rounded-md border border-border bg-background px-5 py-2.5 text-sm font-bold text-foreground shadow-sm hover:bg-black/5 transition-all cursor-pointer" data-testid="button-contact-us">
             Contact Us
           </button>
           <a href="tel:+64210774907" className="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 hover:scale-105 transition-all" data-testid="link-call-now">

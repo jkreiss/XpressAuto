@@ -36,7 +36,7 @@ export function Hero() {
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-7 duration-700 delay-500">
           <button
             onClick={() => scrollTo('contact')}
-            className="group relative inline-flex items-center justify-center gap-3 rounded-lg bg-primary text-primary-foreground px-8 py-4 text-lg font-bold hover:scale-[1.02] transition-all w-full sm:w-auto"
+            className="group relative inline-flex items-center justify-center gap-3 rounded-lg bg-primary text-primary-foreground px-8 py-4 text-lg font-bold hover:scale-[1.02] transition-all w-full sm:w-auto cursor-pointer"
             data-testid="button-book-now"
           >
             Book Now
@@ -44,7 +44,7 @@ export function Hero() {
           </button>
           <button
             onClick={() => scrollTo('services')}
-            className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-border bg-background backdrop-blur-sm px-8 py-4 text-lg font-bold text-foreground shadow-sm hover:bg-black/10 hover:border-border transition-all w-full sm:w-auto"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-border bg-background backdrop-blur-sm px-8 py-4 text-lg font-bold text-foreground shadow-sm hover:bg-black/10 hover:border-border transition-all w-full sm:w-auto cursor-pointer"
             data-testid="button-our-services"
           >
             Our Services
@@ -53,8 +53,8 @@ export function Hero() {
       </div>
 
       {/* Decorative abstract lights */}
-      <div className="absolute top-1/3 -left-32 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[128px] z-0 pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[600px] h-[400px] bg-primary/10 rounded-full blur-[150px] z-0 pointer-events-none translate-x-1/3 translate-y-1/3" />
+      <div className="absolute top-1/3 -left-32 w-[500px] h-[500px] bg-[radial-gradient(closest-side,var(--color-primary)_0%,transparent_100%)] opacity-20 z-0 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[600px] h-[400px] bg-[radial-gradient(closest-side,var(--color-primary)_0%,transparent_100%)] opacity-10 z-0 pointer-events-none translate-x-1/3 translate-y-1/3" />
     </section >
   );
 }

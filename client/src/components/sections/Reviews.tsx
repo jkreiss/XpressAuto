@@ -87,14 +87,14 @@ export function Reviews() {
           <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
             <button
               onClick={scrollPrev}
-              className="w-10 h-10 rounded-full border border-border bg-background flex items-center justify-center text-foreground/70 hover:text-primary hover:border-primary/50 transition-colors shadow-lg"
+              className="w-10 h-10 rounded-full border border-border bg-background flex items-center justify-center text-foreground/70 hover:text-primary hover:border-primary/50 transition-colors shadow-lg cursor-pointer"
               aria-label="Previous review"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={scrollNext}
-              className="w-10 h-10 rounded-full border border-border bg-background flex items-center justify-center text-foreground/70 hover:text-primary hover:border-primary/50 transition-colors shadow-lg"
+              className="w-10 h-10 rounded-full border border-border bg-background flex items-center justify-center text-foreground/70 hover:text-primary hover:border-primary/50 transition-colors shadow-lg cursor-pointer"
               aria-label="Next review"
             >
               <ChevronRight className="w-5 h-5" />

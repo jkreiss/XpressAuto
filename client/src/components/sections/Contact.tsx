@@ -78,7 +78,7 @@ export function Contact() {
           </div>
 
           <div className="bg-card p-8 md:p-12 rounded-3xl border border-black/5 shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px] -z-10 translate-x-1/3 -translate-y-1/3" />
+            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[radial-gradient(closest-side,var(--color-primary)_0%,transparent_100%)] opacity-10 -z-10 translate-x-1/3 -translate-y-1/3" />
             <h3 className="text-3xl font-black text-foreground mb-8">Send us a message</h3>
 
             <form className="space-y-6 relative z-10" onSubmit={(e) => e.preventDefault()}>
