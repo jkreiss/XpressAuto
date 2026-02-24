@@ -6,6 +6,7 @@
 @theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
+  --color-review: hsl(var(--review));
   --color-card: hsl(var(--card));
   --color-card-foreground: hsl(var(--card-foreground));
   --color-popover: hsl(var(--popover));
@@ -23,38 +24,38 @@
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
-  
+
   --font-sans: 'Inter', sans-serif;
   --font-display: 'Montserrat', sans-serif;
-  
+
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
 }
 
 :root {
-  /* Dark Gray: #2E2E2E, Black: #111111, Light Blue Accent: #8ac4ff, White: #FFFFFF */
-  --background: 0 0% 7%;
-  --foreground: 0 0% 100%;
-  --card: 0 0% 18%;
-  --card-foreground: 0 0% 100%;
-  --popover: 0 0% 7%;
-  --popover-foreground: 0 0% 100%;
-  
+  --background: 0 0% 98%;
+  --foreground: 0 0% 7%;
+  --review: 200 30% 95%;
+  --card: 0 0% 93%;
+  --card-foreground: 0 0% 7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 7%;
+
   /* Light Blue Accent */
   --primary: 210 100% 77%;
   --primary-foreground: 0 0% 7%;
-  
-  --secondary: 0 0% 18%;
-  --secondary-foreground: 0 0% 100%;
-  --muted: 0 0% 18%;
-  --muted-foreground: 0 0% 64%;
-  --accent: 210 100% 77%;
+
+  --secondary: 0 0% 94%;
+  --secondary-foreground: 0 0% 7%;
+  --muted: 0 0% 94%;
+  --muted-foreground: 0 0% 40%;
+  --accent: 210 100% 90%;
   --accent-foreground: 0 0% 7%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
-  --border: 0 0% 18%;
-  --input: 0 0% 18%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
   --ring: 210 100% 77%;
   --radius: 0.5rem;
 }
@@ -63,10 +64,17 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-display;
   }
 }

@@ -1,10 +1,10 @@
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/sections/Header";
+import { Footer } from "@/components/sections/Footer";
 import { Hero } from "@/components/sections/Hero";
-import { About } from "@/components/sections/About";
 import { Services } from "@/components/sections/Services";
 import { Reviews } from "@/components/sections/Reviews";
 import { Contact } from "@/components/sections/Contact";
+import { About } from "@/components/sections/About";
 
 export default function Home() {
   return (
@@ -12,8 +12,8 @@ export default function Home() {
       <Header />
       <main className="flex-grow">
         <Hero />
-        <About />
         <Services />
+        <About />
         <Reviews />
         <Contact />
       </main>

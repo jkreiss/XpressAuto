@@ -36,12 +36,12 @@ const REVIEWS = [
 ];
 
 export function Reviews() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+  const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "start",
     slidesToScroll: 1,
   });
-  
+
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
@@ -70,18 +70,36 @@ export function Reviews() {
   }, [emblaApi]);
 
   return (
-    <section id="reviews" className="py-32 bg-card relative overflow-hidden">
+    <section id="reviews" className="py-20 bg-review relative overflow-hidden">
       {/* Abstract Texture */}
-      <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-      
+      {/* <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#000000_1px,transparent_1px),linear-gradient(to_bottom,#000000_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)]" /> */}
+
       <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-20">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="h-[2px] w-12 bg-primary"></div>
-            <h2 className="text-sm font-bold tracking-[0.2em] text-primary uppercase">Testimonials</h2>
-            <div className="h-[2px] w-12 bg-primary"></div>
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center sm:items-end justify-between mb-8 gap-4">
+          <div className="text-left w-full sm:w-auto">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="h-[2px] w-8 bg-primary"></div>
+              <h2 className="text-sm font-bold tracking-[0.2em] text-primary uppercase">Testimonials</h2>
+            </div>
+            <h3 className="text-3xl md:text-4xl font-black text-foreground">What Our Customers Say</h3>
           </div>
-          <h3 className="text-4xl md:text-5xl font-black text-white mb-6">What Our Customers Say</h3>
+
+          <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+            <button
+              onClick={scrollPrev}
+              className="w-10 h-10 rounded-full border border-border bg-background flex items-center justify-center text-foreground/70 hover:text-primary hover:border-primary/50 transition-colors shadow-lg"
+              aria-label="Previous review"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={scrollNext}
+              className="w-10 h-10 rounded-full border border-border bg-background flex items-center justify-center text-foreground/70 hover:text-primary hover:border-primary/50 transition-colors shadow-lg"
+              aria-label="Next review"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         <div className="relative max-w-6xl mx-auto">
@@ -89,26 +107,26 @@ export function Reviews() {
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex -ml-6">
               {REVIEWS.map((review) => (
-                <div 
-                  key={review.id} 
+                <div
+                  key={review.id}
                   className="flex-[0_0_100%] min-w-0 pl-6 md:flex-[0_0_50%]"
                 >
-                  <div className="bg-background border border-white/5 p-10 rounded-3xl h-full flex flex-col relative shadow-xl">
+                  <div className="bg-background border border-border p-10 rounded-3xl h-full flex flex-col relative">
                     <Quote className="absolute top-8 right-8 w-16 h-16 text-primary/10" />
                     <div className="flex gap-1.5 mb-8 relative z-10">
                       {[...Array(review.rating)].map((_, i) => (
                         <Star key={i} className="w-5 h-5 fill-primary text-primary" />
                       ))}
                     </div>
-                    <p className="text-white/80 text-xl font-medium leading-relaxed flex-grow mb-10 relative z-10">
+                    <p className="text-foreground/80 text-xl font-medium leading-relaxed flex-grow mb-10 relative z-10">
                       "{review.text}"
                     </p>
-                    <div className="flex items-center gap-4 relative z-10 pt-6 border-t border-white/5">
+                    <div className="flex items-center gap-4 relative z-10 pt-6 border-t border-border">
                       <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center text-primary font-black text-xl border border-primary/20 shadow-inner">
                         {review.author.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-white font-bold text-lg">{review.author}</p>
+                        <p className="text-foreground font-bold text-lg">{review.author}</p>
                         <p className="text-primary/80 text-sm font-semibold tracking-wide">Verified Customer</p>
                       </div>
                     </div>
@@ -118,39 +136,22 @@ export function Reviews() {
             </div>
           </div>
 
-          {/* Controls */}
-          <div className="flex flex-col sm:flex-row items-center justify-between mt-12 gap-8">
-            <div className="flex gap-3">
-              <button 
-                onClick={scrollPrev}
-                className="w-12 h-12 rounded-full border border-white/10 bg-background flex items-center justify-center text-white/70 hover:text-primary hover:border-primary/50 transition-colors shadow-lg"
-                aria-label="Previous review"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button 
-                onClick={scrollNext}
-                className="w-12 h-12 rounded-full border border-white/10 bg-background flex items-center justify-center text-white/70 hover:text-primary hover:border-primary/50 transition-colors shadow-lg"
-                aria-label="Next review"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
-            </div>
-            
-            <div className="flex gap-3">
+          {/* Pagination Dots */}
+          <div className="flex justify-center mt-8">
+            <div className="flex gap-2">
               {REVIEWS.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => scrollTo(index)}
-                  className={`h-2.5 rounded-full transition-all duration-300 ${index === selectedIndex ? "w-8 bg-primary" : "w-2.5 bg-white/20 hover:bg-white/40"}`}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${index === selectedIndex ? "w-8 bg-primary" : "w-2.5 bg-foreground/20 hover:bg-foreground/40"}`}
                   aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
             </div>
           </div>
         </div>
-        
-        <div className="mt-20 inline-flex items-center justify-center w-full">
+
+        {/* <div className="mt-20 inline-flex items-center justify-center w-full">
           <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
             <span className="relative flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -160,7 +161,7 @@ export function Reviews() {
               More reviews coming soon – synced with Google Business.
             </span>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );
