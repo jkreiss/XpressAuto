@@ -24,16 +24,16 @@ export function Hero() {
         {/* <div className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-bold tracking-wide uppercase text-primary mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
           Your Local Automotive Specialists
         </div> */}
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-foreground mb-6 animate-in fade-in slide-in-from-bottom-5 duration-700 delay-150 max-w-5xl leading-[1.1]">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-foreground mb-6 leading-relaxed">
           <span className="text-primary relative inline-block">
             Xpress
           </span> Automotive
         </h1>
-        <p className="text-lg md:text-2xl font-medium text-muted-foreground mb-12 max-w-2xl animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300 leading-relaxed">
+        <p className="text-lg md:text-2xl font-medium text-muted-foreground mb-12 max-w-2xl leading-relaxed">
           Certified automotive repair and maintenance services.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-7 duration-700 delay-500">
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto ">
           <button
             onClick={() => scrollTo('contact')}
             className="group relative inline-flex items-center justify-center gap-3 rounded-lg bg-primary text-primary-foreground px-8 py-4 text-lg font-bold hover:scale-[1.02] transition-all w-full sm:w-auto cursor-pointer"
