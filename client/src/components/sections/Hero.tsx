@@ -11,7 +11,7 @@ export function Hero() {
   return (
     <section id="hero" className="relative bg-black/5 min-h-175 flex items-center justify-center overflow-hidden pt-20">
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-black/15 z-10" />
         <img
           src="/images/diesel-mechanic-module.jpg"
           alt="Mechanic working on engine"
