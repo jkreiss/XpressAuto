@@ -31,7 +31,7 @@ export function Header() {
           <span className="text-primary">Xpress</span> Automotive
         </button>
         {/* <button onClick={scrollToTop} className="flex items-center" data-testid="link-home">
-          <img src="/images/xpresslogo.jpg" alt="Xpress Automotive Logo" className="h-12 w-auto" />
+          <img src="/images/xpresslogo.svg" alt="Xpress Automotive Logo" className="h-auto w-25" />
         </button> */}
 
         <nav className="hidden lg:flex items-center gap-8">
@@ -50,7 +50,7 @@ export function Header() {
             Contact Us
           </button>
           {/* inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 hover:scale-105 transition-all */}
-          
+
         </div>
       </div>
     </header>
