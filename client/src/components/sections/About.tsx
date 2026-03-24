@@ -18,7 +18,7 @@ export function About() {
               <img 
                 src="/images/about.jpg" 
                 alt="Image not found" 
-                className="w-full h-auto object-cover aspect-[4/3] group-hover:scale-105 transition-transform duration-1000 opacity-90"
+                className="w-full h-auto object-cover aspect-[4/3]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
             </div>

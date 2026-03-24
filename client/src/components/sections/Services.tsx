@@ -3,7 +3,7 @@ import { Activity, Wrench, ShieldCheck, AlertTriangle, CarFront } from "lucide-r
 export function Services() {
   const services = [
     {
-      title: "Services",
+      title: "Automotive Services",
       description: "Keep your car running smoothly with our comprehensive automotive services.",
       icon: <CarFront className="w-10 h-10 text-primary" />
     },
