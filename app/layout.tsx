@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   title: "Xpress Automotive",
   description: "Helping you get on the road and stay on the road.",
   icons: {
-    icon: "/images/favicon.ico",
-    shortcut: "/images/favicon.ico",
-    apple: "/images/favicon.ico",
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
   },
 };
 
