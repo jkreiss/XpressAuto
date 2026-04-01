@@ -5,8 +5,10 @@ import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
 const REVIEWS = [
   {
     id: 1,
-    text: "Very good experience there, work was efficient and for a good price.",
-    author: "Anonymous",
+    text: "Very good experience there, work was efficient and for a good price. Our mechanic had the right diagnostic, repaired everything and in a very short time!\n" +
+        "Afterwards he took the time to show us what he did and what we have to do to take care of our van :)\n" +
+        "We arrived very stressed and left in peace, thank you!",
+    author: "Cyrielle Sica",
     rating: 5
   },
   {
@@ -32,7 +34,13 @@ const REVIEWS = [
     text: "Was stranded in Ohakune with a dead car. Scott was awesome coming to help in quick fashion and was able to get us up and going quickly.",
     author: "Cherie Boggiss",
     rating: 5
-  }
+  },
+    {
+    id: 6,
+    text: "One of the best in te world. Honest and professional service! Could not recommend enough",
+    author: "Oliver Smith",
+    rating: 5
+  },
 ];
 
 export function Reviews() {
@@ -70,7 +78,7 @@ export function Reviews() {
   }, [emblaApi]);
 
   return (
-    <section id="reviews" className="py-20 bg-primary/15 relative overflow-hidden">
+    <section id="reviews" className="py-20 bg-muted relative overflow-hidden">
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center sm:items-end justify-between mb-8 gap-4">
           <div className="text-left w-full sm:w-auto">
@@ -108,7 +116,7 @@ export function Reviews() {
                   key={review.id}
                   className="flex-[0_0_100%] min-w-0 pl-6 md:flex-[0_0_50%]"
                 >
-                  <div className="bg-background border border-border p-10 rounded-3xl h-full flex flex-col relative">
+                  <div className="bg-card border border-border p-10 rounded-3xl h-full flex flex-col relative">
                     <Quote className="absolute top-8 right-8 w-16 h-16 text-primary/10" />
                     <div className="flex gap-1.5 mb-8 relative z-10">
                       {[...Array(review.rating)].map((_, i) => (

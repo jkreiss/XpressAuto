@@ -3,7 +3,7 @@
 import { Hero } from "@/components/sections/Hero";
 import { Services } from "@/components/sections/Services";
 import { Reviews } from "@/components/sections/Reviews";
-import { ContactSection } from "@/components/sections/contact-section";
+import { Contact } from "@/components/sections/Contact.tsx";
 import { About } from "@/components/sections/About";
 import { MainPageLayout } from "@/components/main-page-layout";
 
@@ -14,7 +14,7 @@ export default function Home() {
       <Services />
       <About />
       <Reviews />
-      <ContactSection variant="full" />
+      <Contact variant="full" />
     </MainPageLayout>
   );
 }

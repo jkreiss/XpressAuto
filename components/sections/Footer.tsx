@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="bg-background pt-20 pb-8 border-t border-black/5 relative overflow-hidden">
+    <footer className="bg-black/20 pt-20 pb-8 border-t border-border relative overflow-hidden">
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Brand */}
@@ -37,7 +37,7 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-foreground font-bold text-lg mb-6 tracking-wide uppercase">Quick Links</h4>
+            <h4 className="text-primary font-bold text-lg mb-6 tracking-wide uppercase">Quick Links</h4>
             <ul className="space-y-4">
               <li>
                 <Link href="/#hero" className="text-muted-foreground hover:text-primary transition-colors font-medium">Home</Link>
@@ -59,18 +59,26 @@ export function Footer() {
 
           {/* Services */}
           <div>
-            <h4 className="text-foreground font-bold text-lg mb-6 tracking-wide uppercase">Our Services</h4>
+            <h4 className="text-primary font-bold text-lg mb-6 tracking-wide uppercase">Our Services</h4>
             <ul className="space-y-4">
-              <li className="text-muted-foreground font-medium">Servicing & WOF</li>
-              <li className="text-muted-foreground font-medium">General Repairs & Diagnostics</li>
-              <li className="text-muted-foreground font-medium">Wheels & Tyres</li>
-              <li className="text-muted-foreground font-medium">Parts Store</li>
+              <li>
+                <Link href="/servicing" className="text-muted-foreground hover:text-primary transition-colors font-medium">Servicing & WOF</Link>
+              </li>
+              <li>
+                <Link href="/repairs" className="text-muted-foreground hover:text-primary transition-colors font-medium">General Repairs & Diagnostics</Link>
+              </li>
+              <li>
+                <Link href="/tyres" className="text-muted-foreground hover:text-primary transition-colors font-medium">Wheels & Tyres</Link>
+              </li>
+              <li>
+                <Link href="/store" className="text-muted-foreground hover:text-primary transition-colors font-medium">Parts Store</Link>
+              </li>
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-foreground font-bold text-lg mb-6 tracking-wide uppercase">Contact Info</h4>
+            <h4 className="text-primary font-bold text-lg mb-6 tracking-wide uppercase">Contact Info</h4>
             <ul className="space-y-5">
               <li>
                 <a

@@ -5,8 +5,8 @@ export function About() {
   return (
     <section id="about" className="py-20 bg-background relative overflow-hidden">
       <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-          <div className="relative group">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+          <div className="relative group order-2 lg:order-1">
             <div className="absolute -inset-4 bg-gradient-to-tr from-primary/30 to-transparent rounded-3xl blur-xl opacity-40 group-hover:opacity-60 transition duration-1000" />
             <div className="relative rounded-2xl overflow-hidden border border-border shadow-2xl bg-background">
               {/* TODO: Replace /images/team-photo-placeholder.jpg with the real team photo asset. */}
@@ -16,9 +16,9 @@ export function About() {
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 className="w-full h-auto object-cover aspect-[4/3]"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent pointer-events-none" />
             </div>
-            <div className="absolute -bottom-8 -right-8 md:-bottom-12 md:-right-12 bg-background border border-primary/20 p-8 rounded-2xl shadow-2xl z-10 backdrop-blur-xl">
+            <div className="relative mt-4 ml-auto max-w-[260px] bg-background border border-primary/20 p-5 md:p-8 rounded-2xl shadow-2xl z-10 backdrop-blur-xl md:absolute md:mt-0 md:max-w-none md:-bottom-8 md:right-4 lg:-bottom-12 lg:-right-12">
               <div className="flex items-center gap-6">
                 <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-primary/10 text-primary font-black text-3xl shadow-inner border border-primary/20">
                   5+
@@ -31,7 +31,7 @@ export function About() {
             </div>
           </div>
 
-          <div className="flex flex-col mt-12 lg:mt-0">
+          <div className="flex flex-col mt-0 order-1 lg:order-2">
             <div className="flex items-center gap-4 mb-4">
               <div className="h-[2px] w-12 bg-primary"></div>
               <h2 className="text-sm font-bold tracking-[0.2em] text-primary uppercase">About Us</h2>

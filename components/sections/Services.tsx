@@ -15,12 +15,12 @@ function ServiceCard({ title, description, details, href, icon, testId }: Servic
   return (
     <Link
       href={href}
-      className="bg-card border border-black/5 rounded-2xl p-8 hover:border-primary hover:translate-y-0.5 transition-all duration-500 shadow-xl hover:shadow-[0_0_30px_-5px_rgba(138,196,255,0.15)] group relative overflow-hidden flex flex-col h-full"
+      className="bg-card border border-border rounded-2xl p-8 hover:border-primary hover:translate-y-0.5 transition-all duration-500 shadow-xl hover:shadow-[0_0_30px_-5px_rgba(138,196,255,0.15)] group relative overflow-hidden flex flex-col h-full"
       data-testid={testId}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-      <div className="w-20 h-20 rounded-2xl bg-background border border-black/5 shadow-inner flex items-center justify-center mb-8 group-hover:bg-primary/10 group-hover:border-primary/20 transition-colors duration-500">
+      <div className="w-20 h-20 rounded-2xl bg-background border border-border shadow-inner flex items-center justify-center mb-8 group-hover:bg-primary/10 group-hover:border-primary/20 transition-colors duration-500">
         {icon}
       </div>
       <h4 className="text-2xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">{title}</h4>
@@ -48,7 +48,7 @@ export function Services() {
         "Trailer WOF - $55",
         "WOF with service - $55",
       ],
-      href: "/servicing-wof",
+      href: "/servicing",
       icon: <CarFront className="w-10 h-10 text-primary" />,
     },
     {
@@ -58,7 +58,7 @@ export function Services() {
         "Labour - $110/hr",
         "Diagnostic scan - $35 + GST & labour",
       ],
-      href: "/general-repairs-diagnostics",
+      href: "/repairs",
       icon: <Wrench className="w-10 h-10 text-primary" />,
     },
     {
@@ -68,7 +68,7 @@ export function Services() {
         "Puncture repair - $45 (incl. GST)",
         "Tyre fitment - from $25",
       ],
-      href: "/wheels-tyres",
+      href: "/tyres",
       icon: <Disc className="w-10 h-10 text-primary" />,
     },
     {
@@ -80,14 +80,14 @@ export function Services() {
         "Oils & Fluids",
           "+ More"
       ],
-      href: "/parts-store",
+      href: "/store",
       icon: <Package className="w-10 h-10 text-primary" />,
     },
   ];
 
   return (
-    <section id="services" className="py-20 bg-primary/2 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,#8ac4ff0a_0%,transparent_50%)]" />
+    <section id="services" className="py-20 bg-muted relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,var(--color-primary)_0%,transparent_50%)] opacity-10" />
       
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-20">
