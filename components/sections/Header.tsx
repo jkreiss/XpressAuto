@@ -4,10 +4,11 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Phone } from "lucide-react";
+import { Menu, Phone, X } from "lucide-react";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -18,6 +19,10 @@ export function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
 
   const navItems = [
     { href: "/", label: "Home" },
@@ -66,6 +71,52 @@ export function Header() {
             Contact Us
           </Link>
         </div>
+
+        <button
+          type="button"
+          className="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-md border border-border bg-card text-foreground transition-colors hover:bg-muted"
+          aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={isMobileMenuOpen}
+          onClick={() => setIsMobileMenuOpen((open) => !open)}
+        >
+          {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+      </div>
+
+      <div className={`md:hidden border-t border-border bg-background/95 backdrop-blur-md transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? "max-h-[85vh] opacity-100" : "max-h-0 opacity-0"}`}>
+        <nav className="container mx-auto px-4 py-4 flex flex-col gap-2">
+          {navItems.map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`rounded-md px-3 py-3 text-sm font-bold tracking-wide uppercase transition-colors ${active ? "bg-primary/10 text-primary" : "text-foreground/80 hover:bg-muted hover:text-primary"}`}
+                data-testid={`mobile-nav-${item.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+          <div className="mt-3 grid grid-cols-1 gap-2">
+            <a
+              href="tel:+64210774907"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-border bg-foreground px-4 py-3 text-sm font-bold text-background shadow-sm transition-all hover:brightness-110"
+            >
+              <Phone className="w-4 h-4" />
+              Call Now
+            </a>
+            <Link
+              href={`${pathname}#contact`}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-primary bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:brightness-110"
+            >
+              Contact Us
+            </Link>
+          </div>
+        </nav>
       </div>
     </header>
   );
