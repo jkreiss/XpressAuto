@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Phone } from "lucide-react";
 import Image from "next/image";
 import heroImage from "@/public/images/diesel-mechanic-module.jpg";
 
@@ -43,9 +43,17 @@ export function Hero() {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto ">
+          <a
+            href="tel:+64210774907"
+            className="sm:hidden group relative inline-flex items-center justify-center gap-3 rounded-lg bg-foreground text-background px-8 py-4 text-lg font-bold brightness-110 hover:scale-105 transition-all w-full cursor-pointer"
+            data-testid="button-call-now-mobile"
+          >
+            <Phone className="w-5 h-5" />
+            Call Now
+          </a>
           <button
             onClick={() => scrollTo('contact')}
-            className="group relative inline-flex items-center justify-center gap-3 rounded-lg bg-foreground text-background px-8 py-4 text-lg font-bold brightness-110 hover:scale-105 transition-all w-full sm:w-auto cursor-pointer"
+            className="hidden sm:inline-flex group relative items-center justify-center gap-3 rounded-lg bg-foreground text-background px-8 py-4 text-lg font-bold brightness-110 hover:scale-105 transition-all w-full sm:w-auto cursor-pointer"
             data-testid="button-book-now"
           >
             Book Now

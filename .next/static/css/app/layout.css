@@ -1786,6 +1786,16 @@
       margin-bottom: calc(var(--spacing) * 8);
     }
   }
+  .sm\:hidden {
+    @media (width >= 40rem) {
+      display: none;
+    }
+  }
+  .sm\:inline-flex {
+    @media (width >= 40rem) {
+      display: inline-flex;
+    }
+  }
   .sm\:h-\[320px\] {
     @media (width >= 40rem) {
       height: 320px;
