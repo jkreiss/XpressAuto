@@ -41,6 +41,7 @@ export function Header() {
             alt="Xpress Automotive logo"
             width={180}
             height={52}
+            sizes="180px"
             className={`w-auto transition-all duration-300 ${isScrolled ? "h-11 md:h-12" : "h-14 md:h-16"}`}
             priority
           />

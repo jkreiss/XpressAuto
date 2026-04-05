@@ -15,8 +15,8 @@ export function Footer() {
                 alt="Xpress Automotive"
                 width={260}
                 height={80}
+                sizes="260px"
                 className="h-25 w-auto"
-                priority={false}
               />
             </Link>
             <p className="text-muted-foreground mb-8 leading-relaxed pr-4">

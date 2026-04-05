@@ -37,6 +37,7 @@ export function ShopPhotoGallery({ photos, allPhotos }: ShopPhotoGalleryProps) {
               alt={`Shop photo ${index + 2}`}
               width={500}
               height={700}
+              sizes="(min-width: 640px) 16vw, 100vw"
               className="w-full aspect-[3/4] rounded-xl object-cover cursor-pointer"
             />
           </button>
@@ -88,6 +89,7 @@ export function ShopPhotoGallery({ photos, allPhotos }: ShopPhotoGalleryProps) {
                 alt="Expanded shop photo"
                 width={1200}
                 height={1800}
+                sizes="85vw"
                 className="max-h-[85vh] max-w-[85vw] h-auto w-auto rounded-lg object-contain"
               />
             </div>

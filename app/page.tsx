@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import HomePage from "@/components/home-page";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Xpress Automotive | Trusted Local Mechanics in Raetihi",
   description:

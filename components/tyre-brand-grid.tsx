@@ -28,6 +28,7 @@ export function TyreBrandGrid() {
             alt={`${brand.name} logo`}
             width={140}
             height={56}
+            sizes="(min-width: 640px) 140px, 120px"
             className="h-auto w-50 object-contain "
           />
         </div>

@@ -4,6 +4,8 @@ import { Contact } from "@/components/sections/Contact.tsx";
 import { ShopPhotoGallery } from "@/components/shop-photo-gallery";
 import { ShopPhotoLightboxImage } from "@/components/shop-photo-lightbox-image";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Parts Store | Xpress Automotive Raetihi",
   description:

@@ -1,6 +1,6 @@
+"use client";
+
 import { ArrowRight, Phone } from "lucide-react";
-import Image from "next/image";
-import heroImage from "@/public/images/diesel-mechanic-module.jpg";
 
 export function Hero() {
   const scrollTo = (id: string) => {

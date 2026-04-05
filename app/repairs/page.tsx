@@ -3,6 +3,8 @@ import Link from "next/link";
 import { MainPageLayout } from "@/components/main-page-layout";
 import { Contact } from "@/components/sections/Contact.tsx";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "General Repairs & Diagnostics | Xpress Automotive Raetihi",
   description:

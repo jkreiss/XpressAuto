@@ -4,6 +4,8 @@ import { MainPageLayout } from "@/components/main-page-layout";
 import { Contact } from "@/components/sections/Contact.tsx";
 import { TyreBrandGrid } from "@/components/tyre-brand-grid";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Wheels & Tyres | Xpress Automotive Raetihi",
   description:

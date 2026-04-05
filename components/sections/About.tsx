@@ -1,5 +1,4 @@
 import Image from "next/image";
-import aboutImage from "@/public/images/about.jpg";
 
 export function About() {
   return (
@@ -11,8 +10,10 @@ export function About() {
             <div className="relative rounded-2xl overflow-hidden border border-border shadow-2xl bg-background">
               {/* TODO: Replace /images/team-photo-placeholder.jpg with the real team photo asset. */}
               <Image
-                src={aboutImage}
+                src="/images/about.jpg"
                 alt="Xpress Automotive team"
+                width={1600}
+                height={1200}
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 className="w-full h-auto object-cover aspect-[4/3]"
               />

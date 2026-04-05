@@ -36,6 +36,8 @@ export function ShopPhotoLightboxImage({ src, alt, allPhotos }: ShopPhotoLightbo
           alt={alt}
           width={1200}
           height={700}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          priority
           className="h-auto w-full rounded-xl object-cover cursor-pointer"
         />
       </button>
@@ -85,6 +87,7 @@ export function ShopPhotoLightboxImage({ src, alt, allPhotos }: ShopPhotoLightbo
                 alt={alt}
                 width={1400}
                 height={900}
+                sizes="85vw"
                 className="max-h-[85vh] max-w-[85vw] h-auto w-auto rounded-lg object-contain"
               />
             </div>
