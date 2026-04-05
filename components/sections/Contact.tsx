@@ -188,7 +188,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
 
               <button
                 type="submit"
-                className="w-full bg-primary text-primary-foreground font-black text-lg rounded-xl px-6 py-5 hover:bg-primary/90 hover:scale-[1.02] transition-all shadow-lg shadow-primary/20 mt-4"
+                className="w-full bg-primary text-primary-foreground font-black text-lg rounded-xl px-6 py-5 hover:brightness-110 hover:scale-[1.02] transition-all shadow-lg shadow-primary/20 mt-4"
               >
                 Send Message
               </button>
