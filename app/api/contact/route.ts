@@ -1,0 +1,81 @@
+import { NextRequest, NextResponse } from "next/server";
+
+type TurnstileVerifyResponse = {
+  success: boolean;
+  "error-codes"?: string[];
+};
+
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  const name = String(body?.name ?? "").trim();
+  const phone = String(body?.phone ?? "").trim();
+  const email = String(body?.email ?? "").trim();
+  const registration = String(body?.registration ?? "").trim();
+  const message = String(body?.message ?? "").trim();
+  const turnstileToken = String(body?.turnstileToken ?? "").trim();
+
+  if (!name || !phone || !email || !message) {
+    return NextResponse.json(
+      { message: "Please fill in all required fields." },
+      { status: 400 },
+    );
+  }
+
+  if (!turnstileToken) {
+    return NextResponse.json(
+      { message: "Please complete the security check." },
+      { status: 400 },
+    );
+  }
+
+  const secretKey =
+    process.env.TURNSTILE_SECRET_KEY || process.env.TUNRSTILE_SECRET_KEY;
+
+  if (!secretKey) {
+    return NextResponse.json(
+      { message: "Turnstile secret key is not configured on the server." },
+      { status: 500 },
+    );
+  }
+
+  const verifyBody = new URLSearchParams();
+  verifyBody.append("secret", secretKey);
+  verifyBody.append("response", turnstileToken);
+  verifyBody.append("remoteip", request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "");
+
+  let verification: TurnstileVerifyResponse;
+  try {
+    const verifyResponse = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: verifyBody,
+      cache: "no-store",
+    });
+    verification = (await verifyResponse.json()) as TurnstileVerifyResponse;
+  } catch {
+    return NextResponse.json(
+      { message: "Security verification failed. Please try again." },
+      { status: 502 },
+    );
+  }
+
+  if (!verification.success) {
+    return NextResponse.json(
+      { message: "Security check failed. Please try again." },
+      { status: 400 },
+    );
+  }
+
+  // TODO: wire this payload to your email provider or CRM.
+  console.log("Contact form submission accepted", {
+    name,
+    phone,
+    email,
+    registration,
+    messageLength: message.length,
+  });
+
+  return NextResponse.json({ ok: true });
+}

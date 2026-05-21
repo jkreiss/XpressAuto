@@ -75,7 +75,7 @@ export default function ServicingWofPage() {
           </div>
         </div>
       </section>
-      <Contact background="tinted" heading="Ready to book a service of WOF?" />
+      <Contact background="tinted" heading="Ready to book a service or WOF?" />
     </MainPageLayout>
   );
 }
