@@ -34,7 +34,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
     window.onTurnstileError = () => {
       setTurnstileToken("");
       setSubmitState("error");
-      setSubmitMessage("Spam check failed. Please refresh the captcha and try again.");
+      setSubmitMessage("[TS_WIDGET_ERROR] Turnstile widget failed before submit. Check domain/key or script blocking.");
     };
 
     return () => {
@@ -77,18 +77,25 @@ export function Contact({ variant = "full", background = "default", heading }: C
 
     if (!turnstileToken) {
       setSubmitState("error");
-      setSubmitMessage("Please complete the spam check before submitting.");
+      setSubmitMessage("[TS_NO_TOKEN] Turnstile token missing. Complete the challenge before submitting.");
       return;
     }
 
     setSubmitState("submitting");
     setSubmitMessage("");
 
-    const verifyResponse = await fetch("/api/contact/verify-turnstile", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token: turnstileToken }),
-    });
+    let verifyResponse: Response;
+    try {
+      verifyResponse = await fetch("/api/contact/verify-turnstile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: turnstileToken }),
+      });
+    } catch {
+      setSubmitState("error");
+      setSubmitMessage("[TS_VERIFY_FETCH_FAIL] Verify request failed before server (network/CSP/ad-block).");
+      return;
+    }
 
     if (!verifyResponse.ok) {
       const errorData = (await verifyResponse.json().catch(() => null)) as {
@@ -101,7 +108,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
       const statusReason = ` [HTTP ${verifyResponse.status}]`;
       const bodyReason = rawBody ? ` ${rawBody.slice(0, 140)}.` : "";
       setSubmitState("error");
-      setSubmitMessage(`Spam check failed. Please refresh the captcha and try again.${errorCodes}${errorReason}${statusReason}${bodyReason}`);
+      setSubmitMessage(`[TS_VERIFY_REJECTED] Turnstile verify failed.${errorCodes}${errorReason}${statusReason}${bodyReason}`);
       return;
     }
 
@@ -122,7 +129,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
 
     if (!netlifyResponse.ok) {
       setSubmitState("error");
-      setSubmitMessage("Unable to send your message right now. Please try again shortly.");
+      setSubmitMessage(`[NETLIFY_FORM_POST_FAIL] Form submit failed [HTTP ${netlifyResponse.status}].`);
       return;
     }
 
