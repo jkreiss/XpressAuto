@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 type TurnstileResponse = {
   success: boolean;
+  "error-codes"?: string[];
 };
 
 export async function POST(request: NextRequest) {
@@ -35,7 +36,14 @@ export async function POST(request: NextRequest) {
 
   const result = (await verifyResponse.json()) as TurnstileResponse;
   if (!result.success) {
-    return NextResponse.json({ ok: false, error: "Invalid Turnstile token" }, { status: 400 });
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "Invalid Turnstile token",
+        codes: result["error-codes"] ?? [],
+      },
+      { status: 400 },
+    );
   }
 
   return NextResponse.json({ ok: true });

@@ -91,8 +91,10 @@ export function Contact({ variant = "full", background = "default", heading }: C
     });
 
     if (!verifyResponse.ok) {
+      const errorData = (await verifyResponse.json().catch(() => null)) as { codes?: string[] } | null;
+      const errorCodes = errorData?.codes?.length ? ` (${errorData.codes.join(", ")})` : "";
       setSubmitState("error");
-      setSubmitMessage("Spam check failed. Please refresh the captcha and try again.");
+      setSubmitMessage(`Spam check failed. Please refresh the captcha and try again.${errorCodes}`);
       return;
     }
 
