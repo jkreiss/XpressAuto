@@ -1,25 +1,8 @@
 "use client";
 
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "@/hooks/use-toast";
-
-declare global {
-  interface Window {
-    turnstile?: {
-      render: (
-        container: HTMLElement,
-        options: {
-          sitekey: string;
-          theme?: "light" | "dark" | "auto";
-          callback?: (token: string) => void;
-          "expired-callback"?: () => void;
-          "error-callback"?: () => void;
-        },
-      ) => string;
-    };
-  }
-}
+import Script from "next/script";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 
 type ContactSectionProps = {
   variant?: "full" | "compact";
@@ -28,75 +11,44 @@ type ContactSectionProps = {
 };
 
 export function Contact({ variant = "full", background = "default", heading }: ContactSectionProps) {
-  const [isMounted, setIsMounted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSent, setIsSent] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState("");
-  const [turnstileLoadError, setTurnstileLoadError] = useState("");
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
   const compact = variant === "compact";
   const sectionBackgroundClass = background === "tinted" ? "bg-muted" : "bg-background";
   const contactHeading = heading ?? (compact ? "Need help with your vehicle?" : "Ready to schedule an appointment?");
-  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || process.env.TURNSTILE_SITE_KEY;
+  const formName = "contact";
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+  const captchaElementId = useMemo(() => `cf-turnstile-${variant}`, [variant]);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [submitState, setSubmitState] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [submitMessage, setSubmitMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isMounted || !turnstileSiteKey || !turnstileContainerRef.current) {
-      return;
-    }
-
-    const existingScript = document.querySelector<HTMLScriptElement>(
-      'script[src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"]',
-    );
-
-    const renderTurnstile = () => {
-      if (!window.turnstile || !turnstileContainerRef.current) {
-        return;
-      }
-      turnstileContainerRef.current.innerHTML = "";
-      window.turnstile.render(turnstileContainerRef.current, {
-        sitekey: turnstileSiteKey,
-        theme: "light",
-        callback: (token: string) => {
-          setTurnstileToken(token);
-          setTurnstileLoadError("");
-        },
-        "expired-callback": () => setTurnstileToken(""),
-        "error-callback": () => {
-          setTurnstileToken("");
-          setTurnstileLoadError("Security widget failed to load. Refresh and try again.");
-        },
-      });
+    window.onTurnstileSuccess = (token: string) => {
+      setTurnstileToken(token);
+      setSubmitState("idle");
+      setSubmitMessage("");
+    };
+    window.onTurnstileExpired = () => {
+      setTurnstileToken("");
+    };
+    window.onTurnstileError = () => {
+      setTurnstileToken("");
+      setSubmitState("error");
+      setSubmitMessage("Spam check failed. Please refresh the captcha and try again.");
     };
 
-    if (existingScript) {
-      if (window.turnstile) {
-        renderTurnstile();
-      } else {
-        existingScript.addEventListener("load", renderTurnstile, { once: true });
-      }
-      return;
-    }
+    return () => {
+      window.onTurnstileSuccess = undefined;
+      window.onTurnstileExpired = undefined;
+      window.onTurnstileError = undefined;
+    };
+  }, []);
 
-    const script = document.createElement("script");
-    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
-    script.async = true;
-    script.defer = true;
-    script.addEventListener("load", renderTurnstile, { once: true });
-    script.addEventListener("error", () => {
-      setTurnstileLoadError("Security widget failed to load. Refresh and try again.");
-    });
-    document.head.appendChild(script);
-  }, [isMounted, turnstileSiteKey]);
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const formData = new FormData(form);
+    const honeypot = formData.get("bot-field");
     const values = {
       name: String(formData.get("name") ?? "").trim(),
       phone: String(formData.get("phone") ?? "").trim(),
@@ -104,66 +56,84 @@ export function Contact({ variant = "full", background = "default", heading }: C
       message: String(formData.get("message") ?? "").trim(),
     };
 
-    const nextErrors: Record<string, string> = {};
-    if (!values.name) nextErrors.name = "Please enter your full name.";
-    if (!values.phone) nextErrors.phone = "Please enter your phone number.";
-    if (!values.email) nextErrors.email = "Please enter your email address.";
-    if (!values.message) nextErrors.message = "Please enter a message.";
-    if (!turnstileToken) nextErrors.turnstile = "Please complete the security check.";
+    if (typeof honeypot === "string" && honeypot.trim().length > 0) {
+      return;
+    }
 
-    if (Object.keys(nextErrors).length > 0) {
-      setFieldErrors(nextErrors);
-      toast({
-        variant: "destructive",
-        title: "Please complete the missing fields",
-        description: "Check the form and try again.",
-      });
+    const nextFieldErrors: Record<string, string> = {};
+    if (!values.name) nextFieldErrors.name = "Please enter your full name.";
+    if (!values.phone) nextFieldErrors.phone = "Please enter your phone number.";
+    if (!values.email) nextFieldErrors.email = "Please enter your email address.";
+    if (!values.message) nextFieldErrors.message = "Please enter your message.";
+
+    if (Object.keys(nextFieldErrors).length > 0) {
+      setFieldErrors(nextFieldErrors);
+      setSubmitState("error");
+      setSubmitMessage("Please fill out all required fields.");
       return;
     }
 
     setFieldErrors({});
-    setIsSubmitting(true);
 
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: values.name,
-          phone: values.phone,
-          email: values.email,
-          registration: formData.get("registration"),
-          message: values.message,
-          turnstileToken,
-        }),
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data?.message || "Unable to send your message right now.");
-      }
-
-      toast({
-        title: "Message sent",
-        description: "Thanks, we will get back to you shortly.",
-      });
-      form.reset();
-      setTurnstileToken("");
-      setIsSent(true);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Unable to send your message right now.";
-      toast({
-        variant: "destructive",
-        title: "Message not sent",
-        description: message,
-      });
-    } finally {
-      setIsSubmitting(false);
+    if (!turnstileToken) {
+      setSubmitState("error");
+      setSubmitMessage("Please complete the spam check before submitting.");
+      return;
     }
-  };
+
+    setSubmitState("submitting");
+    setSubmitMessage("");
+
+    const verifyResponse = await fetch("/api/contact/verify-turnstile", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: turnstileToken }),
+    });
+
+    if (!verifyResponse.ok) {
+      setSubmitState("error");
+      setSubmitMessage("Spam check failed. Please refresh the captcha and try again.");
+      return;
+    }
+
+    const payload = new URLSearchParams();
+    payload.append("form-name", formName);
+    payload.append("name", String(formData.get("name") ?? ""));
+    payload.append("phone", String(formData.get("phone") ?? ""));
+    payload.append("email", String(formData.get("email") ?? ""));
+    payload.append("registration", String(formData.get("registration") ?? ""));
+    payload.append("message", String(formData.get("message") ?? ""));
+    payload.append("bot-field", String(formData.get("bot-field") ?? ""));
+
+    const netlifyResponse = await fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: payload.toString(),
+    });
+
+    if (!netlifyResponse.ok) {
+      setSubmitState("error");
+      setSubmitMessage("Unable to send your message right now. Please try again shortly.");
+      return;
+    }
+
+    setSubmitState("success");
+    setSubmitMessage("");
+    form.reset();
+    setTurnstileToken("");
+    if (window.turnstile) {
+      window.turnstile.reset(captchaElementId);
+    }
+  }
 
   return (
     <section id="contact" className={`py-16 md:py-20 ${sectionBackgroundClass} relative overflow-hidden`}>
+      {siteKey && (
+        <Script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+          strategy="afterInteractive"
+        />
+      )}
       <div className="absolute top-0 right-0 w-full h-[500px] bg-gradient-to-b from-card to-transparent -z-10" />
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
@@ -283,97 +253,120 @@ export function Contact({ variant = "full", background = "default", heading }: C
           <div className="order-1 lg:order-2 bg-card p-5 sm:p-8 md:p-12 rounded-3xl border border-border shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[radial-gradient(closest-side,var(--color-primary)_0%,transparent_100%)] opacity-10 -z-10 translate-x-1/3 -translate-y-1/3" />
             <h3 className="text-2xl sm:text-3xl font-black text-foreground mb-6 sm:mb-8">
-              {isSent ? "Message received" : "Send us a message"}
+              {submitState === "success" ? "Message received" : "Send us a message"}
             </h3>
 
-            {isSent ? (
+            {submitState === "success" ? (
               <div className="relative z-10 rounded-xl border border-primary/30 bg-primary/5 p-6 sm:p-8">
                 <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground text-2xl font-black">
                   ✓
                 </div>
                 <p className="text-center text-base sm:text-lg font-medium text-foreground">
-                  Thanks, we have received your message. We will get back to you as soon as we can.
+                  Thank you we have received your message and will get back to you as soon as we can
                 </p>
               </div>
             ) : (
-            <form className="space-y-6 relative z-10" onSubmit={handleSubmit} noValidate>
-              <div className="space-y-2">
-                <label htmlFor={`${variant}-name`} className="text-sm font-bold tracking-wide text-foreground/80 uppercase">Full Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  id={`${variant}-name`}
-                  className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-inner"
-                  placeholder="John Doe"
-                />
-                {fieldErrors.name ? <p className="text-sm text-destructive">{fieldErrors.name}</p> : null}
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor={`${variant}-phone`} className="text-sm font-bold tracking-wide text-foreground/80 uppercase">Phone Number</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  id={`${variant}-phone`}
-                  className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-inner"
-                  placeholder="021 123 4567"
-                />
-                {fieldErrors.phone ? <p className="text-sm text-destructive">{fieldErrors.phone}</p> : null}
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor={`${variant}-email`} className="text-sm font-bold tracking-wide text-foreground/80 uppercase">Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  id={`${variant}-email`}
-                  className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-inner"
-                  placeholder="john@example.com"
-                />
-                {fieldErrors.email ? <p className="text-sm text-destructive">{fieldErrors.email}</p> : null}
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor={`${variant}-registration`} className="text-sm font-bold tracking-wide text-foreground/80 uppercase">Registration Number</label>
-                <input
-                  type="text"
-                  name="registration"
-                  id={`${variant}-registration`}
-                  className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-inner"
-                  placeholder="ABC123"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor={`${variant}-message`} className="text-sm font-bold tracking-wide text-foreground/80 uppercase">Message</label>
-                <textarea
-                  id={`${variant}-message`}
-                  name="message"
-                  rows={4}
-                  className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none shadow-inner"
-                  placeholder="How can we help you?"
-                />
-                {fieldErrors.message ? <p className="text-sm text-destructive">{fieldErrors.message}</p> : null}
-              </div>
-
-              {turnstileSiteKey ? (
-                <div ref={turnstileContainerRef} className="min-h-[65px]" />
-              ) : (
-                <p className="text-sm text-destructive">
-                  Turnstile is not configured. Set `NEXT_PUBLIC_TURNSTILE_SITE_KEY`.
-                </p>
-              )}
-              {turnstileLoadError ? <p className="text-sm text-destructive">{turnstileLoadError}</p> : null}
-              {fieldErrors.turnstile ? <p className="text-sm text-destructive">{fieldErrors.turnstile}</p> : null}
-
-              <button
-                type="submit"
-                disabled={isSubmitting || !turnstileSiteKey}
-                className="w-full bg-primary text-primary-foreground font-black text-lg rounded-xl px-6 py-5 hover:brightness-110 hover:scale-[1.02] transition-all shadow-lg shadow-primary/20 mt-4 cursor cursor-pointer"
+              <form
+                className="space-y-6 relative z-10"
+                name={formName}
+                method="POST"
+                data-netlify="true"
+                data-netlify-honeypot="bot-field"
+                onSubmit={handleSubmit}
+                noValidate
               >
-                {isSubmitting ? "Sending..." : "Send Message"}
-              </button>
-            </form>
+                <input type="hidden" name="form-name" value={formName} />
+                <p className="hidden">
+                  <label>
+                    Don&apos;t fill this out if you&apos;re human: <input name="bot-field" />
+                  </label>
+                </p>
+                <div className="space-y-2">
+                  <label htmlFor={`${variant}-name`} className="text-sm font-bold tracking-wide text-foreground/80 uppercase">Full Name</label>
+                  <input
+                    type="text"
+                    id={`${variant}-name`}
+                    name="name"
+                    required
+                    className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-inner"
+                    placeholder="John Doe"
+                  />
+                  {fieldErrors.name && <p className="text-sm text-destructive">{fieldErrors.name}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor={`${variant}-phone`} className="text-sm font-bold tracking-wide text-foreground/80 uppercase">Phone Number</label>
+                  <input
+                    type="tel"
+                    id={`${variant}-phone`}
+                    name="phone"
+                    required
+                    className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-inner"
+                    placeholder="021 123 4567"
+                  />
+                  {fieldErrors.phone && <p className="text-sm text-destructive">{fieldErrors.phone}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor={`${variant}-email`} className="text-sm font-bold tracking-wide text-foreground/80 uppercase">Email Address</label>
+                  <input
+                    type="email"
+                    id={`${variant}-email`}
+                    name="email"
+                    required
+                    className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-inner"
+                    placeholder="john@example.com"
+                  />
+                  {fieldErrors.email && <p className="text-sm text-destructive">{fieldErrors.email}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor={`${variant}-registration`} className="text-sm font-bold tracking-wide text-foreground/80 uppercase">Registration Number</label>
+                  <input
+                    type="text"
+                    id={`${variant}-registration`}
+                    name="registration"
+                    className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-inner"
+                    placeholder="ABC123"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor={`${variant}-message`} className="text-sm font-bold tracking-wide text-foreground/80 uppercase">Message</label>
+                  <textarea
+                    id={`${variant}-message`}
+                    name="message"
+                    rows={4}
+                    required
+                    className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none shadow-inner"
+                    placeholder="How can we help you?"
+                  />
+                  {fieldErrors.message && <p className="text-sm text-destructive">{fieldErrors.message}</p>}
+                </div>
+
+                {siteKey ? (
+                  <div
+                    id={captchaElementId}
+                    className="cf-turnstile"
+                    data-sitekey={siteKey}
+                    data-callback="onTurnstileSuccess"
+                    data-expired-callback="onTurnstileExpired"
+                    data-error-callback="onTurnstileError"
+                  />
+                ) : (
+                  <p className="text-sm text-destructive">Turnstile site key is missing.</p>
+                )}
+
+                {submitMessage && <p className="text-sm text-destructive">{submitMessage}</p>}
+
+                <button
+                  type="submit"
+                  disabled={submitState === "submitting"}
+                  className="w-full bg-primary text-primary-foreground font-black text-lg rounded-xl px-6 py-5 hover:brightness-110 hover:scale-[1.02] transition-all shadow-lg shadow-primary/20 mt-4"
+                >
+                  {submitState === "submitting" ? "Sending..." : "Send Message"}
+                </button>
+              </form>
             )}
           </div>
         </div>
@@ -400,4 +393,15 @@ export function Contact({ variant = "full", background = "default", heading }: C
       </div>
     </section>
   );
+}
+
+declare global {
+  interface Window {
+    turnstile?: {
+      reset: (id?: string) => void;
+    };
+    onTurnstileSuccess?: (token: string) => void;
+    onTurnstileExpired?: () => void;
+    onTurnstileError?: () => void;
+  }
 }
