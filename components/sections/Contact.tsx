@@ -105,7 +105,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
     payload.append("message", String(formData.get("message") ?? ""));
     payload.append("bot-field", String(formData.get("bot-field") ?? ""));
 
-    const netlifyResponse = await fetch("/", {
+    const netlifyResponse = await fetch("/__forms.html", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: payload.toString(),
@@ -270,6 +270,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
                 className="space-y-6 relative z-10"
                 name={formName}
                 method="POST"
+                action="/__forms.html"
                 data-netlify="true"
                 data-netlify-honeypot="bot-field"
                 onSubmit={handleSubmit}
