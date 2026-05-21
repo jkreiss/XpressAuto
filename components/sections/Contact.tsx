@@ -172,15 +172,6 @@ export function Contact({ variant = "full", background = "default", heading }: C
         </div>
 
         <div className={`grid ${compact ? "lg:grid-cols-2" : "lg:grid-cols-2"} gap-8 sm:gap-10 md:gap-14 lg:gap-24`}>
-          <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
-            <input type="text" name="bot-field" />
-            <input type="text" name="name" />
-            <input type="text" name="phone" />
-            <input type="email" name="email" />
-            <input type="text" name="registration" />
-            <textarea name="message" />
-          </form>
-
           <div className="order-2 lg:order-1">
             <div className="hidden lg:flex items-center gap-4 mb-4">
               <div className="h-[2px] w-12 bg-primary"></div>

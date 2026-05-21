@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
     request.nextUrl.origin;
 
   try {
-    const netlifyResponse = await fetch(baseUrl, {
+    const netlifyResponse = await fetch(`${baseUrl}/__forms.html`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
