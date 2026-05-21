@@ -95,10 +95,13 @@ export function Contact({ variant = "full", background = "default", heading }: C
         error?: string;
         codes?: string[];
       } | null;
+      const rawBody = errorData ? "" : await verifyResponse.text().catch(() => "");
       const errorCodes = errorData?.codes?.length ? ` (${errorData.codes.join(", ")})` : "";
       const errorReason = errorData?.error ? ` ${errorData.error}.` : "";
+      const statusReason = ` [HTTP ${verifyResponse.status}]`;
+      const bodyReason = rawBody ? ` ${rawBody.slice(0, 140)}.` : "";
       setSubmitState("error");
-      setSubmitMessage(`Spam check failed. Please refresh the captcha and try again.${errorCodes}${errorReason}`);
+      setSubmitMessage(`Spam check failed. Please refresh the captcha and try again.${errorCodes}${errorReason}${statusReason}${bodyReason}`);
       return;
     }
 
