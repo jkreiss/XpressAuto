@@ -30,7 +30,9 @@ type ContactSectionProps = {
 export function Contact({ variant = "full", background = "default", heading }: ContactSectionProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSent, setIsSent] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
   const compact = variant === "compact";
   const sectionBackgroundClass = background === "tinted" ? "bg-muted" : "bg-background";
@@ -83,21 +85,45 @@ export function Contact({ variant = "full", background = "default", heading }: C
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsSubmitting(true);
-
     const form = event.currentTarget;
     const formData = new FormData(form);
+    const values = {
+      name: String(formData.get("name") ?? "").trim(),
+      phone: String(formData.get("phone") ?? "").trim(),
+      email: String(formData.get("email") ?? "").trim(),
+      message: String(formData.get("message") ?? "").trim(),
+    };
+
+    const nextErrors: Record<string, string> = {};
+    if (!values.name) nextErrors.name = "Please enter your full name.";
+    if (!values.phone) nextErrors.phone = "Please enter your phone number.";
+    if (!values.email) nextErrors.email = "Please enter your email address.";
+    if (!values.message) nextErrors.message = "Please enter a message.";
+    if (!turnstileToken) nextErrors.turnstile = "Please complete the security check.";
+
+    if (Object.keys(nextErrors).length > 0) {
+      setFieldErrors(nextErrors);
+      toast({
+        variant: "destructive",
+        title: "Please complete the missing fields",
+        description: "Check the form and try again.",
+      });
+      return;
+    }
+
+    setFieldErrors({});
+    setIsSubmitting(true);
 
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: formData.get("name"),
-          phone: formData.get("phone"),
-          email: formData.get("email"),
+          name: values.name,
+          phone: values.phone,
+          email: values.email,
           registration: formData.get("registration"),
-          message: formData.get("message"),
+          message: values.message,
           turnstileToken,
         }),
       });
@@ -113,6 +139,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
       });
       form.reset();
       setTurnstileToken("");
+      setIsSent(true);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unable to send your message right now.";
       toast({
@@ -245,9 +272,21 @@ export function Contact({ variant = "full", background = "default", heading }: C
 
           <div className="order-1 lg:order-2 bg-card p-5 sm:p-8 md:p-12 rounded-3xl border border-border shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[radial-gradient(closest-side,var(--color-primary)_0%,transparent_100%)] opacity-10 -z-10 translate-x-1/3 -translate-y-1/3" />
-            <h3 className="text-2xl sm:text-3xl font-black text-foreground mb-6 sm:mb-8">Send us a message</h3>
+            <h3 className="text-2xl sm:text-3xl font-black text-foreground mb-6 sm:mb-8">
+              {isSent ? "Message received" : "Send us a message"}
+            </h3>
 
-            <form className="space-y-6 relative z-10" onSubmit={handleSubmit}>
+            {isSent ? (
+              <div className="relative z-10 rounded-xl border border-primary/30 bg-primary/5 p-6 sm:p-8">
+                <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground text-2xl font-black">
+                  ✓
+                </div>
+                <p className="text-center text-base sm:text-lg font-medium text-foreground">
+                  Thanks, we have received your message. We will get back to you as soon as we can.
+                </p>
+              </div>
+            ) : (
+            <form className="space-y-6 relative z-10" onSubmit={handleSubmit} noValidate>
               <div className="space-y-2">
                 <label htmlFor={`${variant}-name`} className="text-sm font-bold tracking-wide text-foreground/80 uppercase">Full Name</label>
                 <input
@@ -256,8 +295,8 @@ export function Contact({ variant = "full", background = "default", heading }: C
                   id={`${variant}-name`}
                   className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-inner"
                   placeholder="John Doe"
-                  required
                 />
+                {fieldErrors.name ? <p className="text-sm text-destructive">{fieldErrors.name}</p> : null}
               </div>
 
               <div className="space-y-2">
@@ -268,8 +307,8 @@ export function Contact({ variant = "full", background = "default", heading }: C
                   id={`${variant}-phone`}
                   className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-inner"
                   placeholder="021 123 4567"
-                  required
                 />
+                {fieldErrors.phone ? <p className="text-sm text-destructive">{fieldErrors.phone}</p> : null}
               </div>
 
               <div className="space-y-2">
@@ -280,8 +319,8 @@ export function Contact({ variant = "full", background = "default", heading }: C
                   id={`${variant}-email`}
                   className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-inner"
                   placeholder="john@example.com"
-                  required
                 />
+                {fieldErrors.email ? <p className="text-sm text-destructive">{fieldErrors.email}</p> : null}
               </div>
 
               <div className="space-y-2">
@@ -303,8 +342,8 @@ export function Contact({ variant = "full", background = "default", heading }: C
                   rows={4}
                   className="w-full bg-background border border-border rounded-xl px-5 py-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none shadow-inner"
                   placeholder="How can we help you?"
-                  required
                 />
+                {fieldErrors.message ? <p className="text-sm text-destructive">{fieldErrors.message}</p> : null}
               </div>
 
               {turnstileSiteKey ? (
@@ -314,15 +353,17 @@ export function Contact({ variant = "full", background = "default", heading }: C
                   Turnstile is not configured. Set `NEXT_PUBLIC_TURNSTILE_SITE_KEY`.
                 </p>
               )}
+              {fieldErrors.turnstile ? <p className="text-sm text-destructive">{fieldErrors.turnstile}</p> : null}
 
               <button
                 type="submit"
                 disabled={isSubmitting || !turnstileSiteKey || !turnstileToken}
-                className="w-full bg-primary text-primary-foreground font-black text-lg rounded-xl px-6 py-5 hover:brightness-110 hover:scale-[1.02] transition-all shadow-lg shadow-primary/20 mt-4"
+                className="w-full bg-primary text-primary-foreground font-black text-lg rounded-xl px-6 py-5 hover:brightness-110 hover:scale-[1.02] transition-all shadow-lg shadow-primary/20 mt-4 cursor cursor-pointer"
               >
                 {isSubmitting ? "Sending..." : "Send Message"}
               </button>
             </form>
+            )}
           </div>
         </div>
 
