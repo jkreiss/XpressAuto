@@ -18,20 +18,37 @@ export async function POST(request: NextRequest) {
     "";
 
   if (!secret) {
-    return NextResponse.json({ ok: false, error: "Missing Turnstile secret" }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: "Missing Turnstile secret (TURNSTILE_SECRET_KEY)" },
+      { status: 500 },
+    );
   }
 
   const formData = new FormData();
   formData.append("secret", secret);
   formData.append("response", token);
 
-  const verifyResponse = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-    method: "POST",
-    body: formData,
-  });
+  let verifyResponse: Response;
+  try {
+    verifyResponse = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      body: formData,
+    });
+  } catch {
+    return NextResponse.json(
+      { ok: false, error: "Could not reach Cloudflare Turnstile verify endpoint" },
+      { status: 502 },
+    );
+  }
 
   if (!verifyResponse.ok) {
-    return NextResponse.json({ ok: false, error: "Verification request failed" }, { status: 502 });
+    return NextResponse.json(
+      {
+        ok: false,
+        error: `Verification request failed with status ${verifyResponse.status}`,
+      },
+      { status: 502 },
+    );
   }
 
   const result = (await verifyResponse.json()) as TurnstileResponse;

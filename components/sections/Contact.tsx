@@ -91,10 +91,14 @@ export function Contact({ variant = "full", background = "default", heading }: C
     });
 
     if (!verifyResponse.ok) {
-      const errorData = (await verifyResponse.json().catch(() => null)) as { codes?: string[] } | null;
+      const errorData = (await verifyResponse.json().catch(() => null)) as {
+        error?: string;
+        codes?: string[];
+      } | null;
       const errorCodes = errorData?.codes?.length ? ` (${errorData.codes.join(", ")})` : "";
+      const errorReason = errorData?.error ? ` ${errorData.error}.` : "";
       setSubmitState("error");
-      setSubmitMessage(`Spam check failed. Please refresh the captcha and try again.${errorCodes}`);
+      setSubmitMessage(`Spam check failed. Please refresh the captcha and try again.${errorCodes}${errorReason}`);
       return;
     }
 
