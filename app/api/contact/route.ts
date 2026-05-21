@@ -68,14 +68,42 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // TODO: wire this payload to your email provider or CRM.
-  console.log("Contact form submission accepted", {
+  const netlifyPayload = new URLSearchParams({
+    "form-name": "contact",
     name,
     phone,
     email,
     registration,
-    messageLength: message.length,
+    message,
   });
+
+  const baseUrl =
+    process.env.URL ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    request.nextUrl.origin;
+
+  try {
+    const netlifyResponse = await fetch(baseUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: netlifyPayload.toString(),
+      cache: "no-store",
+    });
+
+    if (!netlifyResponse.ok) {
+      return NextResponse.json(
+        { message: "Message could not be recorded right now. Please try again." },
+        { status: 502 },
+      );
+    }
+  } catch {
+    return NextResponse.json(
+      { message: "Message could not be recorded right now. Please try again." },
+      { status: 502 },
+    );
+  }
 
   return NextResponse.json({ ok: true });
 }

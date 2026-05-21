@@ -172,6 +172,15 @@ export function Contact({ variant = "full", background = "default", heading }: C
         </div>
 
         <div className={`grid ${compact ? "lg:grid-cols-2" : "lg:grid-cols-2"} gap-8 sm:gap-10 md:gap-14 lg:gap-24`}>
+          <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
+            <input type="text" name="bot-field" />
+            <input type="text" name="name" />
+            <input type="text" name="phone" />
+            <input type="email" name="email" />
+            <input type="text" name="registration" />
+            <textarea name="message" />
+          </form>
+
           <div className="order-2 lg:order-1">
             <div className="hidden lg:flex items-center gap-4 mb-4">
               <div className="h-[2px] w-12 bg-primary"></div>
@@ -357,7 +366,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
 
               <button
                 type="submit"
-                disabled={isSubmitting || !turnstileSiteKey || !turnstileToken}
+                disabled={isSubmitting || !turnstileSiteKey}
                 className="w-full bg-primary text-primary-foreground font-black text-lg rounded-xl px-6 py-5 hover:brightness-110 hover:scale-[1.02] transition-all shadow-lg shadow-primary/20 mt-4 cursor cursor-pointer"
               >
                 {isSubmitting ? "Sending..." : "Send Message"}
