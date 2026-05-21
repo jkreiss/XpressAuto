@@ -32,6 +32,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileLoadError, setTurnstileLoadError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
   const compact = variant === "compact";
@@ -60,9 +61,15 @@ export function Contact({ variant = "full", background = "default", heading }: C
       window.turnstile.render(turnstileContainerRef.current, {
         sitekey: turnstileSiteKey,
         theme: "light",
-        callback: (token: string) => setTurnstileToken(token),
+        callback: (token: string) => {
+          setTurnstileToken(token);
+          setTurnstileLoadError("");
+        },
         "expired-callback": () => setTurnstileToken(""),
-        "error-callback": () => setTurnstileToken(""),
+        "error-callback": () => {
+          setTurnstileToken("");
+          setTurnstileLoadError("Security widget failed to load. Refresh and try again.");
+        },
       });
     };
 
@@ -80,6 +87,9 @@ export function Contact({ variant = "full", background = "default", heading }: C
     script.async = true;
     script.defer = true;
     script.addEventListener("load", renderTurnstile, { once: true });
+    script.addEventListener("error", () => {
+      setTurnstileLoadError("Security widget failed to load. Refresh and try again.");
+    });
     document.head.appendChild(script);
   }, [isMounted, turnstileSiteKey]);
 
@@ -347,12 +357,13 @@ export function Contact({ variant = "full", background = "default", heading }: C
               </div>
 
               {turnstileSiteKey ? (
-                <div ref={turnstileContainerRef} />
+                <div ref={turnstileContainerRef} className="min-h-[65px]" />
               ) : (
                 <p className="text-sm text-destructive">
                   Turnstile is not configured. Set `NEXT_PUBLIC_TURNSTILE_SITE_KEY`.
                 </p>
               )}
+              {turnstileLoadError ? <p className="text-sm text-destructive">{turnstileLoadError}</p> : null}
               {fieldErrors.turnstile ? <p className="text-sm text-destructive">{fieldErrors.turnstile}</p> : null}
 
               <button
