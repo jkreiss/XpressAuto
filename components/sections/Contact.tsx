@@ -17,6 +17,8 @@ export function Contact({ variant = "full", background = "default", heading }: C
   const formName = "contact";
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileScriptReady, setTurnstileScriptReady] = useState(false);
+  const [turnstileScriptError, setTurnstileScriptError] = useState(false);
   const [submitState, setSubmitState] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [submitMessage, setSubmitMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -69,6 +71,18 @@ export function Contact({ variant = "full", background = "default", heading }: C
 
     const tokenFromForm = String(formData.get("cf-turnstile-response") ?? "").trim();
     const token = tokenFromForm || turnstileToken;
+    if (!siteKey) {
+      setSubmitState("error");
+      setSubmitMessage("[TS_SITEKEY_MISSING] NEXT_PUBLIC_TURNSTILE_SITE_KEY is missing in the client build.");
+      return;
+    }
+
+    if (turnstileScriptError || !turnstileScriptReady) {
+      setSubmitState("error");
+      setSubmitMessage("[TS_SCRIPT_NOT_READY] Turnstile script did not load. Disable content blockers and retry.");
+      return;
+    }
+
     if (!token) {
       setSubmitState("error");
       setSubmitMessage("[TS_NO_TOKEN] Turnstile token missing. Complete the challenge before submitting.");
@@ -138,6 +152,14 @@ export function Contact({ variant = "full", background = "default", heading }: C
         <Script
           src="https://challenges.cloudflare.com/turnstile/v0/api.js"
           strategy="afterInteractive"
+          onLoad={() => {
+            setTurnstileScriptReady(true);
+            setTurnstileScriptError(false);
+          }}
+          onError={() => {
+            setTurnstileScriptReady(false);
+            setTurnstileScriptError(true);
+          }}
         />
       )}
       <div className="absolute top-0 right-0 w-full h-[500px] bg-gradient-to-b from-card to-transparent -z-10" />
@@ -362,7 +384,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
                     <input type="hidden" name="cf-turnstile-response" value={turnstileToken} />
                   </>
                 ) : (
-                  <p className="text-sm text-destructive">Turnstile site key is missing.</p>
+                  <p className="text-sm text-destructive">[TS_SITEKEY_MISSING] Turnstile site key is missing.</p>
                 )}
 
                 {submitMessage && <p className="text-sm text-destructive">{submitMessage}</p>}
