@@ -2,7 +2,7 @@
 
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import Script from "next/script";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 
 type ContactSectionProps = {
   variant?: "full" | "compact";
@@ -16,33 +16,9 @@ export function Contact({ variant = "full", background = "default", heading }: C
   const contactHeading = heading ?? (compact ? "Need help with your vehicle?" : "Ready to schedule an appointment?");
   const formName = "contact";
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
-  const captchaElementId = useMemo(() => `cf-turnstile-${variant}`, [variant]);
-  const [turnstileToken, setTurnstileToken] = useState("");
   const [submitState, setSubmitState] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [submitMessage, setSubmitMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    window.onTurnstileSuccess = (token: string) => {
-      setTurnstileToken(token);
-      setSubmitState("idle");
-      setSubmitMessage("");
-    };
-    window.onTurnstileExpired = () => {
-      setTurnstileToken("");
-    };
-    window.onTurnstileError = () => {
-      setTurnstileToken("");
-      setSubmitState("error");
-      setSubmitMessage("[TS_WIDGET_ERROR] Turnstile widget failed before submit. Check domain/key or script blocking.");
-    };
-
-    return () => {
-      window.onTurnstileSuccess = undefined;
-      window.onTurnstileExpired = undefined;
-      window.onTurnstileError = undefined;
-    };
-  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -75,6 +51,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
 
     setFieldErrors({});
 
+    const turnstileToken = String(formData.get("cf-turnstile-response") ?? "").trim();
     if (!turnstileToken) {
       setSubmitState("error");
       setSubmitMessage("[TS_NO_TOKEN] Turnstile token missing. Complete the challenge before submitting.");
@@ -136,10 +113,6 @@ export function Contact({ variant = "full", background = "default", heading }: C
     setSubmitState("success");
     setSubmitMessage("");
     form.reset();
-    setTurnstileToken("");
-    if (window.turnstile) {
-      window.turnstile.reset(captchaElementId);
-    }
   }
 
   return (
@@ -363,12 +336,8 @@ export function Contact({ variant = "full", background = "default", heading }: C
 
                 {siteKey ? (
                   <div
-                    id={captchaElementId}
                     className="cf-turnstile"
                     data-sitekey={siteKey}
-                    data-callback="onTurnstileSuccess"
-                    data-expired-callback="onTurnstileExpired"
-                    data-error-callback="onTurnstileError"
                   />
                 ) : (
                   <p className="text-sm text-destructive">Turnstile site key is missing.</p>
@@ -410,15 +379,4 @@ export function Contact({ variant = "full", background = "default", heading }: C
       </div>
     </section>
   );
-}
-
-declare global {
-  interface Window {
-    turnstile?: {
-      reset: (id?: string) => void;
-    };
-    onTurnstileSuccess?: (token: string) => void;
-    onTurnstileExpired?: () => void;
-    onTurnstileError?: () => void;
-  }
 }
