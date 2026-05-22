@@ -2,7 +2,7 @@
 
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import Script from "next/script";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 type ContactSectionProps = {
   variant?: "full" | "compact";
@@ -16,9 +16,25 @@ export function Contact({ variant = "full", background = "default", heading }: C
   const contactHeading = heading ?? (compact ? "Need help with your vehicle?" : "Ready to schedule an appointment?");
   const formName = "contact";
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+  const [turnstileToken, setTurnstileToken] = useState("");
   const [submitState, setSubmitState] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [submitMessage, setSubmitMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    window.onTurnstileToken = (token: string) => {
+      setTurnstileToken(token);
+      setSubmitState("idle");
+      setSubmitMessage("");
+    };
+    window.onTurnstileExpired = () => {
+      setTurnstileToken("");
+    };
+    return () => {
+      window.onTurnstileToken = undefined;
+      window.onTurnstileExpired = undefined;
+    };
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -51,8 +67,9 @@ export function Contact({ variant = "full", background = "default", heading }: C
 
     setFieldErrors({});
 
-    const turnstileToken = String(formData.get("cf-turnstile-response") ?? "").trim();
-    if (!turnstileToken) {
+    const tokenFromForm = String(formData.get("cf-turnstile-response") ?? "").trim();
+    const token = tokenFromForm || turnstileToken;
+    if (!token) {
       setSubmitState("error");
       setSubmitMessage("[TS_NO_TOKEN] Turnstile token missing. Complete the challenge before submitting.");
       return;
@@ -66,7 +83,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
       verifyResponse = await fetch("/api/contact/verify-turnstile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: turnstileToken }),
+        body: JSON.stringify({ token }),
       });
     } catch {
       setSubmitState("error");
@@ -335,10 +352,15 @@ export function Contact({ variant = "full", background = "default", heading }: C
                 </div>
 
                 {siteKey ? (
-                  <div
-                    className="cf-turnstile"
-                    data-sitekey={siteKey}
-                  />
+                  <>
+                    <div
+                      className="cf-turnstile"
+                      data-sitekey={siteKey}
+                      data-callback="onTurnstileToken"
+                      data-expired-callback="onTurnstileExpired"
+                    />
+                    <input type="hidden" name="cf-turnstile-response" value={turnstileToken} />
+                  </>
                 ) : (
                   <p className="text-sm text-destructive">Turnstile site key is missing.</p>
                 )}
@@ -379,4 +401,11 @@ export function Contact({ variant = "full", background = "default", heading }: C
       </div>
     </section>
   );
+}
+
+declare global {
+  interface Window {
+    onTurnstileToken?: (token: string) => void;
+    onTurnstileExpired?: () => void;
+  }
 }
