@@ -12,10 +12,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, error: "Missing token" }, { status: 400 });
   }
 
-  const secret =
-    process.env.TURNSTILE_SECRET_KEY ??
-    process.env.TUNRSTILE_SECRET_KEY ??
-    "";
+  const secret = process.env.TURNSTILE_SECRET_KEY ?? "";
 
   if (!secret) {
     return NextResponse.json(

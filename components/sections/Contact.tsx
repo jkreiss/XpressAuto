@@ -2,7 +2,7 @@
 
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import Script from "next/script";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 type ContactSectionProps = {
   variant?: "full" | "compact";
@@ -19,24 +19,96 @@ export function Contact({ variant = "full", background = "default", heading }: C
   const [turnstileToken, setTurnstileToken] = useState("");
   const [turnstileScriptReady, setTurnstileScriptReady] = useState(false);
   const [turnstileScriptError, setTurnstileScriptError] = useState(false);
+  const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
+  const turnstileWidgetIdRef = useRef<string | null>(null);
+  const [turnstileRenderError, setTurnstileRenderError] = useState("");
   const [submitState, setSubmitState] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [submitMessage, setSubmitMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    window.onTurnstileToken = (token: string) => {
-      setTurnstileToken(token);
-      setSubmitState("idle");
-      setSubmitMessage("");
+    if (!turnstileScriptReady || !siteKey || !turnstileContainerRef.current) {
+      return;
+    }
+
+    let cancelled = false;
+    let attempts = 0;
+    let retryTimeout: number | null = null;
+
+    const renderWidget = () => {
+      if (cancelled) {
+        return;
+      }
+
+      if (!window.turnstile?.render) {
+        attempts += 1;
+        if (attempts >= 20) {
+          setTurnstileRenderError("[TS_WIDGET_API_MISSING] Turnstile API loaded but did not initialize.");
+          return;
+        }
+
+        retryTimeout = window.setTimeout(renderWidget, 250);
+        return;
+      }
+
+      if (turnstileWidgetIdRef.current && window.turnstile.remove) {
+        window.turnstile.remove(turnstileWidgetIdRef.current);
+        turnstileWidgetIdRef.current = null;
+      }
+
+      setTurnstileRenderError("");
+      turnstileContainerRef.current!.innerHTML = "";
+
+      try {
+        const widgetId = window.turnstile.render(turnstileContainerRef.current!, {
+          sitekey: siteKey,
+          callback: (token: string) => {
+            setTurnstileToken(token);
+            setTurnstileRenderError("");
+            setSubmitState("idle");
+            setSubmitMessage("");
+          },
+          "expired-callback": () => {
+            setTurnstileToken("");
+          },
+          "error-callback": () => {
+            setTurnstileToken("");
+            setTurnstileRenderError("[TS_WIDGET_ERROR] Turnstile widget failed to initialize.");
+          },
+        });
+
+        if (!widgetId) {
+          setTurnstileRenderError("[TS_WIDGET_ERROR] Turnstile did not return a widget id.");
+          return;
+        }
+
+        turnstileWidgetIdRef.current = widgetId;
+      } catch {
+        setTurnstileToken("");
+        setTurnstileRenderError("[TS_WIDGET_ERROR] Turnstile render threw before the widget mounted.");
+      }
     };
-    window.onTurnstileExpired = () => {
-      setTurnstileToken("");
-    };
+
+    renderWidget();
+
     return () => {
-      window.onTurnstileToken = undefined;
-      window.onTurnstileExpired = undefined;
+      cancelled = true;
+      if (retryTimeout) {
+        window.clearTimeout(retryTimeout);
+      }
+      if (turnstileWidgetIdRef.current && window.turnstile?.remove) {
+        window.turnstile.remove(turnstileWidgetIdRef.current);
+        turnstileWidgetIdRef.current = null;
+      }
     };
-  }, []);
+  }, [siteKey, turnstileScriptReady]);
+
+  function resetTurnstile() {
+    setTurnstileToken("");
+    if (turnstileWidgetIdRef.current && window.turnstile?.reset) {
+      window.turnstile.reset(turnstileWidgetIdRef.current);
+    }
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -83,6 +155,12 @@ export function Contact({ variant = "full", background = "default", heading }: C
       return;
     }
 
+    if (turnstileRenderError) {
+      setSubmitState("error");
+      setSubmitMessage(turnstileRenderError);
+      return;
+    }
+
     if (!token) {
       setSubmitState("error");
       setSubmitMessage("[TS_NO_TOKEN] Turnstile token missing. Complete the challenge before submitting.");
@@ -106,6 +184,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
     }
 
     if (!verifyResponse.ok) {
+      resetTurnstile();
       const errorData = (await verifyResponse.json().catch(() => null)) as {
         error?: string;
         codes?: string[];
@@ -136,6 +215,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
     });
 
     if (!netlifyResponse.ok) {
+      resetTurnstile();
       setSubmitState("error");
       setSubmitMessage(`[NETLIFY_FORM_POST_FAIL] Form submit failed [HTTP ${netlifyResponse.status}].`);
       return;
@@ -143,6 +223,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
 
     setSubmitState("success");
     setSubmitMessage("");
+    resetTurnstile();
     form.reset();
   }
 
@@ -150,9 +231,9 @@ export function Contact({ variant = "full", background = "default", heading }: C
     <section id="contact" className={`py-16 md:py-20 ${sectionBackgroundClass} relative overflow-hidden`}>
       {siteKey && (
         <Script
-          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
           strategy="afterInteractive"
-          onLoad={() => {
+          onReady={() => {
             setTurnstileScriptReady(true);
             setTurnstileScriptError(false);
           }}
@@ -305,6 +386,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
                 noValidate
               >
                 <input type="hidden" name="form-name" value={formName} />
+                <input type="hidden" name="cf-turnstile-response" value={turnstileToken} />
                 <p className="hidden">
                   <label>
                     Don&apos;t fill this out if you&apos;re human: <input name="bot-field" />
@@ -375,13 +457,8 @@ export function Contact({ variant = "full", background = "default", heading }: C
 
                 {siteKey ? (
                   <>
-                    <div
-                      className="cf-turnstile"
-                      data-sitekey={siteKey}
-                      data-callback="onTurnstileToken"
-                      data-expired-callback="onTurnstileExpired"
-                    />
-                    <input type="hidden" name="cf-turnstile-response" value={turnstileToken} />
+                    <div ref={turnstileContainerRef} className="min-h-[70px]" />
+                    {turnstileRenderError && <p className="text-sm text-destructive">{turnstileRenderError}</p>}
                   </>
                 ) : (
                   <p className="text-sm text-destructive">[TS_SITEKEY_MISSING] Turnstile site key is missing.</p>
@@ -427,7 +504,18 @@ export function Contact({ variant = "full", background = "default", heading }: C
 
 declare global {
   interface Window {
-    onTurnstileToken?: (token: string) => void;
-    onTurnstileExpired?: () => void;
+    turnstile?: {
+      render: (
+        container: HTMLElement,
+        options: {
+          sitekey: string;
+          callback?: (token: string) => void;
+          "expired-callback"?: () => void;
+          "error-callback"?: () => void;
+        },
+      ) => string;
+      remove: (widgetId: string) => void;
+      reset: (widgetId: string) => void;
+    };
   }
 }
