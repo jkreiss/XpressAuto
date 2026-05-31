@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const TURNSTILE_TEST_SECRET_KEY = "1x0000000000000000000000000000000AA";
+
 type TurnstileResponse = {
   success: boolean;
   "error-codes"?: string[];
@@ -12,7 +14,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, error: "Missing token" }, { status: 400 });
   }
 
-  const secret = process.env.TURNSTILE_SECRET_KEY ?? "";
+  const hostname = request.nextUrl.hostname;
+  const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1" || hostname === "0.0.0.0";
+  const secret = isLocalhost ? TURNSTILE_TEST_SECRET_KEY : (process.env.TURNSTILE_SECRET_KEY ?? "");
 
   if (!secret) {
     return NextResponse.json(

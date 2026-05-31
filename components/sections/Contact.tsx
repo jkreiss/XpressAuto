@@ -4,6 +4,8 @@ import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import Script from "next/script";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
+const TURNSTILE_TEST_SITE_KEY = "1x00000000000000000000AA";
+
 type ContactSectionProps = {
   variant?: "full" | "compact";
   background?: "default" | "tinted";
@@ -15,7 +17,8 @@ export function Contact({ variant = "full", background = "default", heading }: C
   const sectionBackgroundClass = background === "tinted" ? "bg-muted" : "bg-background";
   const contactHeading = heading ?? (compact ? "Need help with your vehicle?" : "Ready to schedule an appointment?");
   const formName = "contact";
-  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+  const configuredSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+  const [siteKey, setSiteKey] = useState(configuredSiteKey);
   const [turnstileToken, setTurnstileToken] = useState("");
   const [turnstileScriptReady, setTurnstileScriptReady] = useState(false);
   const [turnstileScriptError, setTurnstileScriptError] = useState(false);
@@ -25,6 +28,12 @@ export function Contact({ variant = "full", background = "default", heading }: C
   const [submitState, setSubmitState] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [submitMessage, setSubmitMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const hostname = window.location.hostname;
+    const useLocalTestKey = hostname === "localhost" || hostname === "127.0.0.1" || hostname === "0.0.0.0";
+    setSiteKey(useLocalTestKey ? TURNSTILE_TEST_SITE_KEY : configuredSiteKey);
+  }, [configuredSiteKey]);
 
   useEffect(() => {
     if (!turnstileScriptReady || !siteKey || !turnstileContainerRef.current) {
@@ -71,9 +80,17 @@ export function Contact({ variant = "full", background = "default", heading }: C
           "expired-callback": () => {
             setTurnstileToken("");
           },
-          "error-callback": () => {
+          "error-callback": (errorCode?: string) => {
             setTurnstileToken("");
-            setTurnstileRenderError("[TS_WIDGET_ERROR] Turnstile widget failed to initialize.");
+            const hostname = window.location.hostname;
+            const localhostMessage =
+              hostname === "localhost" || hostname === "127.0.0.1" || hostname === "0.0.0.0"
+                ? " Localhost is using Cloudflare test credentials automatically."
+                : "";
+            const codeMessage = errorCode ? ` [CF ${errorCode}]` : "";
+            setTurnstileRenderError(
+              `[TS_WIDGET_ERROR] Turnstile widget failed to initialize.${codeMessage}${localhostMessage}`,
+            );
           },
         });
 
@@ -511,7 +528,7 @@ declare global {
           sitekey: string;
           callback?: (token: string) => void;
           "expired-callback"?: () => void;
-          "error-callback"?: () => void;
+          "error-callback"?: (errorCode?: string) => void;
         },
       ) => string;
       remove: (widgetId: string) => void;
