@@ -19,6 +19,7 @@ export function Contact({ variant = "full", background = "default", heading }: C
   const formName = "contact";
   const configuredSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
   const [siteKey, setSiteKey] = useState(configuredSiteKey);
+  const [hostname, setHostname] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
   const [turnstileScriptReady, setTurnstileScriptReady] = useState(false);
   const [turnstileScriptError, setTurnstileScriptError] = useState(false);
@@ -30,8 +31,10 @@ export function Contact({ variant = "full", background = "default", heading }: C
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    const hostname = window.location.hostname;
-    const useLocalTestKey = hostname === "localhost" || hostname === "127.0.0.1" || hostname === "0.0.0.0";
+    const currentHostname = window.location.hostname;
+    setHostname(currentHostname);
+    const useLocalTestKey =
+      currentHostname === "localhost" || currentHostname === "127.0.0.1" || currentHostname === "0.0.0.0";
     setSiteKey(useLocalTestKey ? TURNSTILE_TEST_SITE_KEY : configuredSiteKey);
   }, [configuredSiteKey]);
 
@@ -482,6 +485,14 @@ export function Contact({ variant = "full", background = "default", heading }: C
                 )}
 
                 {submitMessage && <p className="text-sm text-destructive">{submitMessage}</p>}
+
+                <div className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+                  <p><span className="font-semibold text-foreground">Turnstile debug</span></p>
+                  <p>Hostname: {hostname || "unknown"}</p>
+                  <p>Configured site key: {configuredSiteKey || "missing"}</p>
+                  <p>Active site key: {siteKey || "missing"}</p>
+                  <p>Script ready: {turnstileScriptReady ? "yes" : "no"}</p>
+                </div>
 
                 <button
                   type="submit"
