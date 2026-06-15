@@ -19,7 +19,6 @@ export function Contact({ variant = "full", background = "default", heading }: C
   const formName = "contact";
   const configuredSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
   const [siteKey, setSiteKey] = useState(configuredSiteKey);
-  const [hostname, setHostname] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
   const [turnstileScriptReady, setTurnstileScriptReady] = useState(false);
   const [turnstileScriptError, setTurnstileScriptError] = useState(false);
@@ -32,7 +31,6 @@ export function Contact({ variant = "full", background = "default", heading }: C
 
   useEffect(() => {
     const currentHostname = window.location.hostname;
-    setHostname(currentHostname);
     const useLocalTestKey =
       currentHostname === "localhost" || currentHostname === "127.0.0.1" || currentHostname === "0.0.0.0";
     setSiteKey(useLocalTestKey ? TURNSTILE_TEST_SITE_KEY : configuredSiteKey);
@@ -386,11 +384,11 @@ export function Contact({ variant = "full", background = "default", heading }: C
             </h3>
 
             {submitState === "success" ? (
-              <div className="relative z-10 rounded-xl border border-primary/30 bg-primary/5 p-6 sm:p-8">
-                <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground text-2xl font-black">
+              <div className="relative z-10 flex min-h-[360px] flex-col items-center justify-center px-6 py-60 text-center sm:px-8">
+                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground text-2xl font-black">
                   ✓
                 </div>
-                <p className="text-center text-base sm:text-lg font-medium text-foreground">
+                <p className="max-w-md text-base font-medium text-foreground sm:text-lg">
                   Thank you we have received your message and will get back to you as soon as we can
                 </p>
               </div>
@@ -485,14 +483,6 @@ export function Contact({ variant = "full", background = "default", heading }: C
                 )}
 
                 {submitMessage && <p className="text-sm text-destructive">{submitMessage}</p>}
-
-                <div className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-xs leading-relaxed text-muted-foreground">
-                  <p><span className="font-semibold text-foreground">Turnstile debug</span></p>
-                  <p>Hostname: {hostname || "unknown"}</p>
-                  <p>Configured site key: {configuredSiteKey || "missing"}</p>
-                  <p>Active site key: {siteKey || "missing"}</p>
-                  <p>Script ready: {turnstileScriptReady ? "yes" : "no"}</p>
-                </div>
 
                 <button
                   type="submit"
