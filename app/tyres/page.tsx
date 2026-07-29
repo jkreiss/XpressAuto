@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: "Wheels & Tyres | Xpress Automotive Raetihi",
   description:
     "Wheels and tyres in Raetihi including puncture repairs, tyre fitment, and supply of major tyre brands for cars, SUVs, utes, trailers, and ATVs.",
+  alternates: {
+    canonical: "/tyres",
+  },
 };
 
 const fitmentPricing = [

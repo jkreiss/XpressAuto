@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: "Parts Store | Xpress Automotive Raetihi",
   description:
     "Visit the Xpress Automotive parts store in Raetihi for batteries, oils, trailer parts, filters, wiper blades, bulbs, tools, and more.",
+  alternates: {
+    canonical: "/store",
+  },
 };
 
 const partsItems = [

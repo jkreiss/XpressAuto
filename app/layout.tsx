@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
 import { Providers } from "./providers";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://xpressautomotive.co.nz";
+import { getSiteUrl } from "@/lib/site-url";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(getSiteUrl()),
   title: {
     default: "Xpress Automotive | Trusted Local Mechanics in Raetihi",
     template: "%s | Xpress Automotive",
@@ -21,9 +20,6 @@ export const metadata: Metadata = {
     "tyres",
     "automotive parts",
   ],
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     type: "website",
     locale: "en_NZ",

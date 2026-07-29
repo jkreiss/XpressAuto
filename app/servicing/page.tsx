@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: "Servicing & WOF | Xpress Automotive Raetihi",
   description:
     "Book servicing and WOF checks in Raetihi. Vehicle WOF $85, Trailer WOF $55, and discounted Service + WOF combo pricing.",
+  alternates: {
+    canonical: "/servicing",
+  },
 };
 
 export default function ServicingWofPage() {

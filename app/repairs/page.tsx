@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: "General Repairs & Diagnostics | Xpress Automotive Raetihi",
   description:
     "General vehicle repairs and diagnostics in Raetihi. Labour rate $110/hour and diagnostic scan pricing from $35 + GST plus labour.",
+  alternates: {
+    canonical: "/repairs",
+  },
 };
 
 const repairItems = [
